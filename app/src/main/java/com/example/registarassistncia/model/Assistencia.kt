@@ -22,6 +22,7 @@ enum class EstadoAssistencia {
     AGUARDAR_PECA,
     EM_REPARACAO,
     CONCLUIDA,
+    ORCAMENTO_REJEITADO,
     CANCELADA
 }
 
