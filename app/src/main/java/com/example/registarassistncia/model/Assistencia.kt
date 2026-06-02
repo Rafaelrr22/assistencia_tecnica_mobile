@@ -9,10 +9,11 @@ data class Assistencia(
     val equipamentoId: Int,
     val data: String,
     val problema: String,
-    val diagnostico: String,
-    val solucao: String,
+    val diagnostico: String?,
+    val solucao: String?,
+    val observacoes: String?,
     val estado : EstadoAssistencia,
-    val tempoGasto: Int
+    val tempoGasto: Int = 0
 )
 
 data class Cliente(
@@ -20,7 +21,9 @@ data class Cliente(
     val nome: String,
     val telefone: String,
     val email: String,
-    val morada: String
+    val nif: String?,
+    val morada: String,
+    val tipoCliente: TipoCliente
 )
 
 data class Tecnico(
@@ -40,7 +43,7 @@ data class Equipamento(
 
 enum class EstadoAssistencia {
     EM_DIAGNOSTICO,
-    AGUARDA_PECA,
+    AGUARDAR_PECA,
     EM_REPARACAO,
     CONCLUIDA,
     CANCELADA
@@ -53,4 +56,9 @@ enum class TipoEquipamento {
     MONITOR,
     SERVIDOR,
     OUTRO
+}
+
+enum class TipoCliente {
+    PARTICULAR,
+    EMPRESA
 }
