@@ -103,7 +103,7 @@ fun ClienteScreen(
 
         Text("Tipo de Cliente")
 
-        //Campo TipoCliente (com dropdown)
+        //Campo TipoCliente (com opção de escolha)
         var tipoCliente by remember { mutableStateOf("PARTICULAR") }
 
         Row(
