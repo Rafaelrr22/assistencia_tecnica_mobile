@@ -15,11 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.statusBarsPadding
 
 @Composable
 fun NovaAssistenciaScreen(
@@ -29,6 +29,7 @@ fun NovaAssistenciaScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .statusBarsPadding()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -107,7 +108,8 @@ fun NovaAssistenciaScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = {}
+            onClick = {},
+            modifier = Modifier.fillMaxWidth(0.5f)
         ) {
             Text("Guardar")
         }
