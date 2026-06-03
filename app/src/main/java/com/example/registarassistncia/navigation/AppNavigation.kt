@@ -26,6 +26,15 @@ fun AppNavigation() {
             HomeScreen(
                 onNovaAssistenciaClick = {
                     navController.navigate(Routes.NOVA_ASSISTENCIA)
+                },
+                onAssistenciasClick = {
+                    navController.navigate(Routes.ASSISTENCIAS)
+                },
+                onClientesClick = {
+                    navController.navigate(Routes.CLIENTES)
+                },
+                onEquipamentosClick = {
+                    navController.navigate(Routes.EQUIPAMENTOS)
                 }
             )
         }

@@ -18,7 +18,10 @@ import com.example.registarassistncia.ui.theme.RegistarAssistênciaTheme
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier,
-               onNovaAssistenciaClick: () -> Unit
+               onNovaAssistenciaClick: () -> Unit,
+               onAssistenciasClick: () -> Unit,
+               onClientesClick: () -> Unit,
+               onEquipamentosClick: () -> Unit
               )
 {
 
@@ -47,7 +50,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { }
+            onClick = onAssistenciasClick
         ) {
             Text("Ver Assistências")
         }
@@ -55,7 +58,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
         Spacer(modifier = Modifier.height(16.dp))
 
         Button (
-            onClick = { }
+            onClick = onClientesClick
         ) {
             Text("Clientes")
         }
@@ -63,7 +66,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { }
+            onClick = onEquipamentosClick
         ) {
             Text("Equipamentos")
         }
@@ -78,7 +81,10 @@ fun HomeScreen(modifier: Modifier = Modifier,
 fun HomeScreenPreview() {
     RegistarAssistênciaTheme {
         HomeScreen(
-            onNovaAssistenciaClick = {}
+            onNovaAssistenciaClick = {},
+            onAssistenciasClick = {},
+            onClientesClick = {},
+            onEquipamentosClick = {}
         )
     }
 }
