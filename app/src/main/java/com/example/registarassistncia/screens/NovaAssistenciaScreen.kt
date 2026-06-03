@@ -24,7 +24,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 @Composable
 fun NovaAssistenciaScreen(
     modifier: Modifier = Modifier
-) {
+)
+
+{
 
     Column(
         modifier = modifier

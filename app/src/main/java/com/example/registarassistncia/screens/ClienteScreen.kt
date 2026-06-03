@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.material3.RadioButton
+import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -25,10 +27,6 @@ import androidx.compose.ui.Alignment
 fun ClienteScreen(
     modifier: Modifier = Modifier
     )
-
-
-
-
 
 {
     Column(
@@ -103,9 +101,33 @@ fun ClienteScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        //Campo TipoCliente
+        Text("Tipo de Cliente")
 
+        //Campo TipoCliente (com dropdown)
+        var tipoCliente by remember { mutableStateOf("PARTICULAR") }
 
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(
+                selected = tipoCliente == "PARTICULAR",
+                onClick = { tipoCliente = "PARTICULAR" }
+            )
+
+            Text("Particular")
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(
+                selected = tipoCliente == "EMPRESA",
+                onClick = { tipoCliente = "EMPRESA" }
+            )
+
+            Text("Empresa")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         Button(
             onClick = {},
