@@ -23,7 +23,11 @@ fun AppNavigation() {
 
     ) {
         composable(Routes.HOME) {
-            HomeScreen()
+            HomeScreen(
+                onNovaAssistenciaClick = {
+                    navController.navigate(Routes.NOVA_ASSISTENCIA)
+                }
+            )
         }
         composable(Routes.ASSISTENCIAS) {
             ListaAssistenciasScreen()

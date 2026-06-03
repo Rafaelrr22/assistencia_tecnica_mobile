@@ -17,7 +17,10 @@ import androidx.compose.ui.unit.dp
 import com.example.registarassistncia.ui.theme.RegistarAssistênciaTheme
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(modifier: Modifier = Modifier,
+               onNovaAssistenciaClick: () -> Unit
+              )
+{
 
     Column(
         modifier = modifier
@@ -35,7 +38,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { }
+            onClick = onNovaAssistenciaClick
         ) {
             Text("Nova Assistência")
 
@@ -74,6 +77,8 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 @Composable
 fun HomeScreenPreview() {
     RegistarAssistênciaTheme {
-        HomeScreen()
+        HomeScreen(
+            onNovaAssistenciaClick = {}
+        )
     }
 }
