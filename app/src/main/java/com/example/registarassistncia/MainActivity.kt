@@ -5,16 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.example.registarassistncia.navigation.AppNavigation
 import com.example.registarassistncia.ui.theme.RegistarAssistênciaTheme
+import com.example.registarassistncia.screens.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +19,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             RegistarAssistênciaTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HomeScreen(
+                    AppNavigation(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -33,44 +28,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-
-        Text(
-            text = "Assistência Técnica",
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Button(
-            onClick = { }
-        ) {
-            Text("Nova Assistência")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = { }
-        ) {
-            Text("Ver Assistências")
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    RegistarAssistênciaTheme {
-        HomeScreen()
-    }
-}
