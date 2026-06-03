@@ -38,6 +38,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             onClick = { }
         ) {
             Text("Nova Assistência")
+
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -47,6 +48,25 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         ) {
             Text("Ver Assistências")
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button (
+            onClick = { }
+        ) {
+            Text("Clientes")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { }
+        ) {
+            Text("Equipamentos")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
     }
 }
 
