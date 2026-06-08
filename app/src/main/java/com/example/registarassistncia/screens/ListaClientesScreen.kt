@@ -1,14 +1,17 @@
 package com.example.registarassistncia.screens
 
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,13 +44,30 @@ fun ListaClientesScreen(
 
 
     val clientes = listOf(
-        "José - 929999999",
-        "Ana - 969999999",
-        "Empresa XPT - 271982600"
+        Triple("José", "929999999","Tipo: Particular"),
+        Triple("Ana", "969999999", "Tipo: Particular"),
+        Triple("Empresa XPT", "271982600", "Tipo: Empresa")
     )
 
-    clientes.forEach {
-        Text(it)
+    clientes.forEach { clientes ->
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable{
+
+                }
+
+        )
+        {
+         Column(
+             modifier = Modifier.padding(16.dp)
+         ) {
+             Text(clientes.first)
+             Text(clientes.second)
+             Text(clientes.third)
+         }
+        }
         Spacer(modifier = Modifier.height(8.dp))
     }
 
