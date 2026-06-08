@@ -45,12 +45,17 @@ fun ListaAssistenciasScreen(
 
     Spacer(modifier = Modifier.height(8.dp))
 
-
+        data class AssistenciaFake(
+            val cliente: String,
+            val equipamento: String,
+            val estado: String,
+            val data: String
+        )
 
     val assistencias = listOf(
-        listOf("José",  "Portátil HP", "Estado: Em Diagnóstico", "08/06/2026"),
-        listOf("Ana", "Desktop", "Estado: Concluída","05/06/2026"),
-        listOf("Empresa Silva", "Impressora HP", "Estado: Aguardar Peças","08/06/2026")
+        AssistenciaFake("José",  "Portátil HP", "Estado: Em Diagnóstico", " Data: 08/06/2026"),
+        AssistenciaFake("Ana", "Desktop", "Estado: Concluída","Data: 05/06/2026"),
+        AssistenciaFake("Empresa Silva", "Impressora HP", "Estado: Aguardar Peças","Data: 08/06/2026")
     )
 
     assistencias.forEach { assistencias ->
@@ -65,10 +70,10 @@ fun ListaAssistenciasScreen(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(assistencias[0])
-                Text(assistencias[1])
-                Text(assistencias[2])
-                Text(assistencias[3])
+                Text(assistencias.cliente)
+                Text(assistencias.equipamento)
+                Text(assistencias.estado)
+                Text(assistencias.data)
             }
         }
 
@@ -77,14 +82,14 @@ fun ListaAssistenciasScreen(
 
     Spacer(modifier = Modifier.height(8.dp))
 
-
+/*
      Button(
             onClick = onDetalhesClick
         )
      {
         Text("Ver detalhes")
      }
-
+*/
     Button(
         onClick = onBackClick
     ) {
