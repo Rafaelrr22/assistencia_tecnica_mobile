@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.registarassistncia.screens.HomeScreen
 import com.example.registarassistncia.screens.ListaAssistenciasScreen
 import com.example.registarassistncia.screens.ClienteScreen
+import com.example.registarassistncia.screens.DetalhesAssistenciaScreen
 import com.example.registarassistncia.screens.EquipamentoScreen
 import com.example.registarassistncia.screens.NovaAssistenciaScreen
 
@@ -18,6 +19,7 @@ fun AppNavigation() {
     NavHost(
         navController = navController,
         startDestination = Routes.HOME
+
 
 
 
@@ -42,6 +44,9 @@ fun AppNavigation() {
             ListaAssistenciasScreen(
                 onBackClick = {
                     navController.popBackStack()
+                },
+                        onDetalhesClick = {
+                    navController.navigate(Routes.DETALHE_ASSISTENCIA)
                 }
             )
         }
@@ -50,6 +55,7 @@ fun AppNavigation() {
                 onBackClick = {
                     navController.popBackStack()
                 }
+
             )
         }
         composable(Routes.EQUIPAMENTOS) {
@@ -66,7 +72,13 @@ fun AppNavigation() {
                 }
             )
         }
-        composable(Routes.DETALHE_ASSISTENCIA) {}
+        composable(Routes.DETALHE_ASSISTENCIA) {
+            DetalhesAssistenciaScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
         composable(Routes.NOVO_CLIENTE) {}
         composable(Routes.NOVO_EQUIPAMENTO) {}
     }

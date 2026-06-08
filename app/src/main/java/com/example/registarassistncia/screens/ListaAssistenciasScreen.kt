@@ -19,7 +19,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ListaAssistenciasScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onDetalhesClick: () -> Unit
 ) {
 
     Column(
@@ -54,10 +55,18 @@ fun ListaAssistenciasScreen(
     Spacer(modifier = Modifier.height(8.dp))
 
 
+     Button(
+            onClick = onDetalhesClick
+        )
+     {
+        Text("Ver detalhes")
+     }
+
     Button(
         onClick = onBackClick
     ) {
         Text("Voltar")
+        }
+
     }
-}
 }
