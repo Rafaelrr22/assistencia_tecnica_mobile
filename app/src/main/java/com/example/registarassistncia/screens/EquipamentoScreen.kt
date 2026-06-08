@@ -29,7 +29,8 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EquipamentoScreen (
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit
 )
 
 {
@@ -143,6 +144,12 @@ fun EquipamentoScreen (
         Text("Guardar")
         }
 
+        Button(
+            onBackClick
+        )
+        {
+            Text("Voltar")
+        }
     }
 
 }

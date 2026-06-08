@@ -23,7 +23,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 
 @Composable
 fun NovaAssistenciaScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit
 )
 
 {
@@ -115,5 +116,10 @@ fun NovaAssistenciaScreen(
         ) {
             Text("Guardar")
         }
+
+        Button(
+            onBackClick
+        ){
+            Text ("Voltar")        }
     }
 }

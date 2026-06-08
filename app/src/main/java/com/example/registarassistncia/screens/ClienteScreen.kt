@@ -25,8 +25,9 @@ import androidx.compose.ui.Alignment
 
 @Composable
 fun ClienteScreen(
-    modifier: Modifier = Modifier
-    )
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit
+)
 
 {
     Column(
@@ -136,6 +137,12 @@ fun ClienteScreen(
             Text("Guardar")
         }
 
+        Button(
+            onClick = onBackClick
+        )
+        {
+            Text("Voltar")
+        }
     }
 
 

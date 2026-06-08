@@ -39,16 +39,32 @@ fun AppNavigation() {
             )
         }
         composable(Routes.ASSISTENCIAS) {
-            ListaAssistenciasScreen()
+            ListaAssistenciasScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
         composable(Routes.CLIENTES) {
-            ClienteScreen()
+            ClienteScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
         composable(Routes.EQUIPAMENTOS) {
-            EquipamentoScreen()
+            EquipamentoScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
         composable(Routes.NOVA_ASSISTENCIA) {
-            NovaAssistenciaScreen()
+            NovaAssistenciaScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
         composable(Routes.DETALHE_ASSISTENCIA) {}
         composable(Routes.NOVO_CLIENTE) {}
