@@ -1,5 +1,6 @@
 package com.example.registarassistncia.model
 
+import java.time.LocalDate
 
 
 data class Assistencia(
@@ -12,8 +13,10 @@ data class Assistencia(
     val diagnostico: String?,
     val solucao: String?,
     val observacoes: String?,
+    val valOrcamento: Double?,
     val estado : EstadoAssistencia,
-    val tempoGasto: Int = 0
+    val tempoGasto: Int = 0,
+    val dataPrevistaEntrega: LocalDate?
 )
 
 
@@ -23,6 +26,7 @@ enum class EstadoAssistencia {
     EM_REPARACAO,
     CONCLUIDA,
     ORCAMENTO_REJEITADO,
+    AGUARDAR_APROVACAO,
     CANCELADA
 }
 
