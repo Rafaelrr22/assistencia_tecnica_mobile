@@ -3,6 +3,7 @@ package com.example.registarassistncia.screens
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,14 +21,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.BuildCircle
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.ArrowBack
 
 @Composable
 fun NovaAssistenciaScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit
-)
-
-{
+) {
 
     Column(
         modifier = modifier
@@ -44,38 +54,71 @@ fun NovaAssistenciaScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Campo Cliente
+        //CAMPO CLIENTE
         var cliente by remember { mutableStateOf("") }
 
         OutlinedTextField(
             value = cliente,
             onValueChange = { cliente = it },
-            label = { Text("Cliente") },
+            label = {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Text("Cliente")
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Campo Equipamento
+        //CAMPO EQUIPAMENTO
         var equipamento by remember { mutableStateOf("") }
 
         OutlinedTextField(
-            value =  equipamento,
+            value = equipamento,
             onValueChange = { equipamento = it },
-            label = {Text("Equipamento") },
+            label = {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.Build,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Text("Equipamento")
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
 
-        // Campo Problema
+        //CAMPO PROBLEMA
         var problema by remember { mutableStateOf("") }
 
         OutlinedTextField(
             value = problema,
             onValueChange = { problema = it },
-            label = {Text("Problema") },
+            label = {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Text("Problema")
+                }
+            },
             minLines = 4,
             modifier = Modifier.fillMaxWidth()
         )
@@ -83,43 +126,110 @@ fun NovaAssistenciaScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
 
-        // Campo Diagnóstico
+        //CAMPO DIAGNÓSTICO
         var diagnostico by remember { mutableStateOf(value = "") }
 
         OutlinedTextField(
             value = diagnostico,
-            onValueChange = { diagnostico = it},
-            label = {Text("Diagnóstico")},
+            onValueChange = { diagnostico = it },
+            label = {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Text("Diagnóstico")
+                }
+            },
             minLines = 4,
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Campo Solução
+        //CAMOP SOLUÇÃO
         var solucao by remember { mutableStateOf("") }
 
         OutlinedTextField(
             value = solucao,
-            onValueChange = {solucao = it},
-            label = {Text("Solução")},
+            onValueChange = { solucao = it },
+            label = {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.BuildCircle,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Text("solução")
+                }
+            },
             minLines = 4,
             modifier = Modifier.fillMaxWidth()
         )
 
+        //CAMPO ORÇAMENTO
+        var orcamento by remember { mutableStateOf("") }
+
+        OutlinedTextField(
+            value = orcamento,
+            onValueChange = { orcamento = it },
+            label = {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AttachMoney,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Text("Orçamento")
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        //CAMPO ESTADO
+
+
+        //CAMPO DATA PREVISTA
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
+
+        //BOTÕES
         Button(
             onClick = {},
             modifier = Modifier.fillMaxWidth(0.5f)
         ) {
+
+            Icon(
+                imageVector = Icons.Default.Save,
+                contentDescription = null
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
             Text("Guardar")
         }
 
         Button(
             onBackClick
-        ){
-            Text ("Voltar")        }
+        ) {
+
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = null
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text("Voltar")
+        }
     }
 }
