@@ -25,6 +25,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.registarassistncia.ui.theme.RegistarAssistênciaTheme
 import androidx.compose.foundation.Image
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CheckboxDefaults.colors
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.example.registarassistncia.R
 
@@ -53,15 +56,18 @@ fun HomeScreen(modifier: Modifier = Modifier,
                 .height(120.dp)
                 .fillMaxWidth(0.7f)
         )
-/*
+
+
+        /*
+        //ICONE CHAVE INGLESA
         Icon(
             imageVector = Icons.Default.Build,
             contentDescription = null,
-            modifier = Modifier.size(80.dp)
+            modifier = Modifier.size(40.dp)
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
 */
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = "Assistência Técnica",
             style = MaterialTheme.typography.headlineMedium
@@ -73,6 +79,12 @@ fun HomeScreen(modifier: Modifier = Modifier,
 
         //CARD ASSISTÊNCIAS
         Card(
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp
+            ),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFE3F2FD)
+                    ),
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
@@ -87,7 +99,10 @@ fun HomeScreen(modifier: Modifier = Modifier,
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                Text("5 Ativas")
+                Text(
+                text = "5 Ativas",
+                style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
 
@@ -95,6 +110,12 @@ fun HomeScreen(modifier: Modifier = Modifier,
 
         //CARD CLIENTES
         Card(
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp
+            ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFE8F0FE)
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
@@ -108,13 +129,23 @@ fun HomeScreen(modifier: Modifier = Modifier,
                     text = "👤 Clientes",
                     style = MaterialTheme.typography.titleMedium
                 )
-                Text("20 Registados")
+
+                Text(
+                    text = "20 Registados",
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
 
         //CARD EQUIPAMENTOS
         Card(
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp
+            ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFEAF4F7)
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
@@ -129,7 +160,11 @@ fun HomeScreen(modifier: Modifier = Modifier,
                     text = "💻 Equipamentos",
                     style = MaterialTheme.typography.titleMedium
                 )
-                Text("39 Registados")
+
+                Text(
+                    text = "39 Registados",
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
 
@@ -151,7 +186,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
         }
 
 /*
-
+        //BOTÕES ANTIGOS
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
