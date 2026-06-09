@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 fun ListaClientesScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
+    onDetalhesClick: () -> Unit,
     onNovoClienteClick: () -> Unit
 ) {
 

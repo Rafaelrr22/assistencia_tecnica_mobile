@@ -5,9 +5,13 @@ object Routes {
     const val ASSISTENCIAS = "assistencias"
     const val CLIENTES = "clientes"
 
+    const val DETALHES_CLIENTE = "detalhes_clientes"
+
     const val LISTA_CLIENTES = "lista_clientes"
 
     const val EQUIPAMENTOS = "equipamentos"
+
+    const val DETALHES_EQUIPAMENTO = "detalhes_equipamento"
 
     const val LISTA_EQUIPAMENTO = "Lista_equipamento"
 

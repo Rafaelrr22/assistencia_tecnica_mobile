@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 fun ListaEquipamentoScreen(
     modifier: Modifier = Modifier,
     onNovoEquipamentoClick: () -> Unit,
+    onDetalhesEquipamentoClick: () -> Unit,
     onBackClick: () -> Unit
 )
 {
