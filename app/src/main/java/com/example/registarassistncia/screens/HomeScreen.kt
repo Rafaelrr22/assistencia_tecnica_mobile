@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -22,6 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.registarassistncia.ui.theme.RegistarAssistênciaTheme
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.example.registarassistncia.R
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier,
@@ -40,6 +45,23 @@ fun HomeScreen(modifier: Modifier = Modifier,
         verticalArrangement = Arrangement.Center
     ) {
 
+        //LOGOTIPO EMPRESA
+        Image(
+            painter = painterResource(id = R.drawable.logo_gef),
+            contentDescription = "Logo GEF",
+            modifier = Modifier
+                .height(120.dp)
+                .fillMaxWidth(0.7f)
+        )
+/*
+        Icon(
+            imageVector = Icons.Default.Build,
+            contentDescription = null,
+            modifier = Modifier.size(80.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+*/
         Text(
             text = "Assistência Técnica",
             style = MaterialTheme.typography.headlineMedium
@@ -98,6 +120,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
                 .clickable {
                     onEquipamentosClick()
                 }
+
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
