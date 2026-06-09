@@ -38,7 +38,7 @@ fun DetalhesEquipamentoScreen(
 
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFE8F0FE)
+                containerColor = Color(0xFFEAF4F7)
             ),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 4.dp

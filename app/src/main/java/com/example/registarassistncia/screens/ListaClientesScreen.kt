@@ -75,7 +75,7 @@ fun ListaClientesScreen(
 
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFEAF4F7)
+                containerColor = Color(0xFFE8F0FE)
             ),
             elevation = cardElevation(
                 defaultElevation = 4.dp
