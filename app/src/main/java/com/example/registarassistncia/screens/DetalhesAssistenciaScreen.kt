@@ -29,243 +29,246 @@ fun DetalhesAssistenciaScreen(
     onBackClick: () -> Unit
 ) {
 
-    Card(
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFE3F2FD)
-        ),
-
-        modifier = Modifier.fillMaxWidth()
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.Start
     ) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Top
+
+        Text(
+            text = "Detalhes Assistência",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Card(
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp
+            ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFE3F2FD)
+            ),
+            modifier = Modifier.fillMaxWidth()
         ) {
 
-            Text(
-                text = "Detalhes Assistência",
-                style = MaterialTheme.typography.headlineMedium
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            //CAMPOS
-
-            // Campo Cliente
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.padding(16.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null
+
+                // CAMPO CLIENTE
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text("Cliente")
+                }
+
+                Text("José Silva")
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // CAMPO EQUIPAMENTO
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Build,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text("Equipamento")
+                }
+
+                Text("Portátil Asus")
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // CAMPO DATA
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text("Data: 08/06/2026")
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // CAMPO PROBLEMA
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text("Problema")
+                }
+
+                Text("Não liga")
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // CAMPO DIAGNÓSTICO
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text("Diagnóstico")
+                }
+
+                Text("Por diagnosticar")
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // CAMPO SOLUÇÃO
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Handyman,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text("Solução")
+                }
+
+                Text("Sem solução Aplicada")
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // CAMPO ESTADO
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text("Estado")
+                }
+
+                Text(
+                    text = "Em Diagnóstico",
+                    color = Color(0xFFFF9800)
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                Text("Cliente")
-            }
+                // CAMPO ORÇAMENTO
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AttachMoney,
+                        contentDescription = null
+                    )
 
-            Text("José Silva")
+                    Spacer(modifier = Modifier.width(8.dp))
 
-            Spacer(modifier = Modifier.height(8.dp))
+                    Text("Orçamento")
+                }
 
-            //CAMPO EQUIPAMENTO
+                Text("65 €")
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Build,
-                    contentDescription = null
-                )
+                Spacer(modifier = Modifier.height(12.dp))
 
-                Spacer(modifier = Modifier.width(8.dp))
+                // CAMPO TEMPO GASTO
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Timer,
+                        contentDescription = null
+                    )
 
-                Text("Equipamento")
-            }
+                    Spacer(modifier = Modifier.width(8.dp))
 
-            Text("Portátil Asus")
+                    Text("Tempo gasto")
+                }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            //CAMPO DATA
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Icon(
-                    imageVector = Icons.Default.DateRange,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("Data: 08/06/2026")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            //CAMPO PROBLEMA
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Icon(
-                    imageVector = Icons.Default.Warning,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("Problema")
-            }
-
-            Text("Não liga")
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            //CAMPO DIAGNOSTICO
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("Diagnóstico")
-            }
-
-            Text("Por diagnosticar")
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            //CAMPO SOLUÇÃO
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Icon(
-                    imageVector = Icons.Default.Handyman,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("Solução")
-            }
-
-            Text("Sem solução Aplicada")
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-
-            //CAMPO ESTADO
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Info,
-                    contentDescription = null
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("Estado")
-            }
-
-            Text(
-
-                text = "Em Diagnóstico",
-                color = Color(0xFFFF9800)
-            )
-
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            //CAMPO ORÇAMENTO
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Icon(
-                    imageVector = Icons.Default.AttachMoney,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("Orçamento")
-            }
-
-            Text("65 €")
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            //CAMPO TEMPO GASTO
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Icon(
-                    imageVector = Icons.Default.Timer,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("Tempo gasto")
-            }
-
-            Text("45 min")
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-
-            //BOTÕES
-            Button(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth(0.5f)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = null
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("Editar")
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth(0.5f)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = null
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("Apagar")
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(
-                onClick = onBackClick
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = null
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("Voltar")
+                Text("45 min")
             }
         }
 
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // BOTÃO EDITAR
+        Button(
+            onClick = {},
+            modifier = Modifier.fillMaxWidth(0.5f)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = null
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text("Editar")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // BOTÃO APAGAR
+        Button(
+            onClick = {},
+            modifier = Modifier.fillMaxWidth(0.5f)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = null
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text("Apagar")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // BOTÃO VOLTAR
+        Button(
+            onClick = onBackClick
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = null
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text("Voltar")
         }
     }
-
+}
