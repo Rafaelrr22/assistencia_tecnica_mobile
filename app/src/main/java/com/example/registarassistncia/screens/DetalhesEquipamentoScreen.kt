@@ -7,10 +7,13 @@ import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -33,23 +36,49 @@ fun DetalhesEquipamentoScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.Computer, null)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Portátil Asus")
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFE8F0FE)
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+        {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Computer, null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Portátil")
+                }
+
+                Text("Portátil Asus")
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Folder, null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Tipo")
+                }
+                Text("Portátil")
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Numbers, null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Nº Série")
+                }
+                Text("ABC213")
+            }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
 
-        Text("Tipo: Portátil")
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.Memory, null)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("ABC123")
-        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -76,7 +105,8 @@ fun DetalhesEquipamentoScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(
-            onClick = onBackClick
+            onClick = onBackClick,
+            modifier = Modifier.fillMaxWidth(0.5f)
         ) {
             Icon(Icons.Default.ArrowBack, null)
             Spacer(modifier = Modifier.width(8.dp))
