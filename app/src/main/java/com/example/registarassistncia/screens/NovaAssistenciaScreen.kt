@@ -36,6 +36,9 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun NovaAssistenciaScreen(
@@ -57,189 +60,212 @@ fun NovaAssistenciaScreen(
             text = "Nova Assistência",
             style = MaterialTheme.typography.headlineMedium
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        //CAMPO CLIENTE
-        var cliente by remember { mutableStateOf("") }
-
-        OutlinedTextField(
-            value = cliente,
-            onValueChange = { cliente = it },
-            label = {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    Text("Cliente")
-                }
-            },
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFE3F2FD)
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp
+            ),
             modifier = Modifier.fillMaxWidth()
-        )
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
 
-        Spacer(modifier = Modifier.height(8.dp))
+                //CAMPO CLIENTE
+                var cliente by remember { mutableStateOf("") }
 
-        //CAMPO EQUIPAMENTO
-        var equipamento by remember { mutableStateOf("") }
-
-        OutlinedTextField(
-            value = equipamento,
-            onValueChange = { equipamento = it },
-            label = {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.Build,
-                        contentDescription = null
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    Text("Equipamento")
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-
-        //CAMPO PROBLEMA
-        var problema by remember { mutableStateOf("") }
-
-        OutlinedTextField(
-            value = problema,
-            onValueChange = { problema = it },
-            label = {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.Warning,
-                        contentDescription = null
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    Text("Problema")
-                }
-            },
-            minLines = 4,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-
-        //CAMPO DIAGNÓSTICO
-        var diagnostico by remember { mutableStateOf(value = "") }
-
-        OutlinedTextField(
-            value = diagnostico,
-            onValueChange = { diagnostico = it },
-            label = {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = null
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    Text("Diagnóstico")
-                }
-            },
-            minLines = 4,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        //CAMOP SOLUÇÃO
-        var solucao by remember { mutableStateOf("") }
-
-        OutlinedTextField(
-            value = solucao,
-            onValueChange = { solucao = it },
-            label = {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.BuildCircle,
-                        contentDescription = null
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    Text("Solução")
-                }
-            },
-            minLines = 4,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        //CAMPO ORÇAMENTO
-        var orcamento by remember { mutableStateOf("") }
-
-        OutlinedTextField(
-            value = orcamento,
-            onValueChange = { orcamento = it },
-            label = {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.AttachMoney,
-                        contentDescription = null
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    Text("Orçamento")
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        //CAMPO ESTADO
-        var estado by remember {mutableStateOf("")}
-
-        OutlinedTextField(
-            value = estado,
-            onValueChange = {estado = it},
-            label = {
-                Row {
-                    Icon(
-                            imageVector = Icons.Default.Info,
-                            contentDescription = null
+                OutlinedTextField(
+                    value = cliente,
+                    onValueChange = { cliente = it },
+                    label = {
+                        Row {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = null
                             )
-                    Spacer(modifier = Modifier.width(4.dp))
 
-                    Text("Estado")
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
+                            Spacer(modifier = Modifier.width(4.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
+                            Text("Cliente")
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-        // CAMPO DATA PREVISTA
-        var dataPrevista by remember { mutableStateOf("15/06/2026") }
+                Spacer(modifier = Modifier.height(12.dp))
 
-        OutlinedTextField(
-            value = dataPrevista,
-            onValueChange = { dataPrevista = it },
-            label = {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.DateRange,
-                        contentDescription = null
-                    )
+                //CAMPO EQUIPAMENTO
+                var equipamento by remember { mutableStateOf("") }
 
-                    Spacer(modifier = Modifier.width(4.dp))
+                OutlinedTextField(
+                    value = equipamento,
+                    onValueChange = { equipamento = it },
+                    label = {
+                        Row {
+                            Icon(
+                                imageVector = Icons.Default.Build,
+                                contentDescription = null
+                            )
 
-                    Text("Data Prevista")
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
+                            Spacer(modifier = Modifier.width(4.dp))
+
+                            Text("Equipamento")
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+
+                //CAMPO PROBLEMA
+                var problema by remember { mutableStateOf("") }
+
+                OutlinedTextField(
+                    value = problema,
+                    onValueChange = { problema = it },
+                    label = {
+                        Row {
+                            Icon(
+                                imageVector = Icons.Default.Warning,
+                                contentDescription = null
+                            )
+
+                            Spacer(modifier = Modifier.width(4.dp))
+
+                            Text("Problema")
+                        }
+                    },
+                    minLines = 4,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+
+                //CAMPO DIAGNÓSTICO
+                var diagnostico by remember { mutableStateOf(value = "") }
+
+                OutlinedTextField(
+                    value = diagnostico,
+                    onValueChange = { diagnostico = it },
+                    label = {
+                        Row {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null
+                            )
+
+                            Spacer(modifier = Modifier.width(4.dp))
+
+                            Text("Diagnóstico")
+                        }
+                    },
+                    minLines = 4,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                //CAMOP SOLUÇÃO
+                var solucao by remember { mutableStateOf("") }
+
+                OutlinedTextField(
+                    value = solucao,
+                    onValueChange = { solucao = it },
+                    label = {
+                        Row {
+                            Icon(
+                                imageVector = Icons.Default.BuildCircle,
+                                contentDescription = null
+                            )
+
+                            Spacer(modifier = Modifier.width(4.dp))
+
+                            Text("Solução")
+                        }
+                    },
+                    minLines = 4,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                //CAMPO ORÇAMENTO
+                var orcamento by remember { mutableStateOf("") }
+
+                OutlinedTextField(
+                    value = orcamento,
+                    onValueChange = { orcamento = it },
+                    label = {
+                        Row {
+                            Icon(
+                                imageVector = Icons.Default.AttachMoney,
+                                contentDescription = null
+                            )
+
+                            Spacer(modifier = Modifier.width(4.dp))
+
+                            Text("Orçamento")
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                //CAMPO ESTADO
+                var estado by remember {mutableStateOf("")}
+
+                OutlinedTextField(
+                    value = estado,
+                    onValueChange = {estado = it},
+                    label = {
+                        Row {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+
+                            Text("Estado")
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // CAMPO DATA PREVISTA
+                var dataPrevista by remember { mutableStateOf("15/06/2026") }
+
+                OutlinedTextField(
+                    value = dataPrevista,
+                    onValueChange = { dataPrevista = it },
+                    label = {
+                        Row {
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = null
+                            )
+
+                            Spacer(modifier = Modifier.width(4.dp))
+
+                            Text("Data Prevista")
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+            }
+        }
+
+
+
 
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -258,7 +284,7 @@ fun NovaAssistenciaScreen(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text("Guardar")
+            Text("Guardar Assistência")
         }
 
         Button(

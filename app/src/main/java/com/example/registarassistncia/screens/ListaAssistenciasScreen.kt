@@ -28,7 +28,7 @@ import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.filled.Info
-
+import androidx.compose.material3.CardDefaults
 
 
 data class AssistenciaFake(
@@ -75,6 +75,13 @@ fun ListaAssistenciasScreen(
     assistencias.forEach { assistencias ->
 
         Card(
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp
+            ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFE3F2FD)
+            ),
+
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {

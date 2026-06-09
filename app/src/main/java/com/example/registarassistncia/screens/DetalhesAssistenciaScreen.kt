@@ -30,6 +30,13 @@ fun DetalhesAssistenciaScreen(
 ) {
 
     Card(
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFE3F2FD)
+        ),
+
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
