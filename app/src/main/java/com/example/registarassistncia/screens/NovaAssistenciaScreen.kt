@@ -218,7 +218,7 @@ fun NovaAssistenciaScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         // CAMPO DATA PREVISTA
         var dataPrevista by remember { mutableStateOf("15/06/2026") }
