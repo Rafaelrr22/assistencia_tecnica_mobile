@@ -1,12 +1,19 @@
 package com.example.registarassistncia.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,12 +47,87 @@ fun HomeScreen(modifier: Modifier = Modifier,
 
         Spacer(modifier = Modifier.height(32.dp))
 
+
+
+        //CARD ASSISTÊNCIAS
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onAssistenciasClick()
+                }
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "🔧 Assistências",
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                Text("5 Ativas")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        //CARD CLIENTES
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onClientesClick()
+                }
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "👤 Clientes",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text("20 Registados")
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        //CARD EQUIPAMENTOS
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onEquipamentosClick()
+                }
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "💻 Equipamentos",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text("39 Registados")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        //BOTÕES
+
         Button(
             onClick = onNovaAssistenciaClick
         ) {
-            Text("Nova Assistência")
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = null
+            )
 
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text("Nova Assistência")
         }
+
+/*
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -72,7 +154,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-
+*/
     }
 }
 
