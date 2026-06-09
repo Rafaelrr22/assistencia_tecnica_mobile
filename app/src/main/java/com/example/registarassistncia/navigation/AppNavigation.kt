@@ -13,6 +13,8 @@ import com.example.registarassistncia.screens.EquipamentoScreen
 import com.example.registarassistncia.screens.ListaClientesScreen
 import com.example.registarassistncia.screens.ListaEquipamentoScreen
 import com.example.registarassistncia.screens.NovaAssistenciaScreen
+import com.example.registarassistncia.screens.DetalhesClienteScreen
+import com.example.registarassistncia.screens.DetalhesEquipamentoScreen
 
 @Composable
 fun AppNavigation() {
@@ -88,7 +90,9 @@ fun AppNavigation() {
                 onBackClick = {
                     navController.popBackStack()
                 },
-                onDetalhesClienteClick = { },
+                onDetalhesClienteClick = {
+                    navController.navigate(Routes.DETALHES_CLIENTE)
+                },
                 onNovoClienteClick = {
                     navController.navigate(Routes.CLIENTES)
                 }
@@ -101,9 +105,27 @@ fun AppNavigation() {
                 onBackClick = {
                     navController.popBackStack()
                 },
-                onDetalhesEquipamentoClick = {},
+                onDetalhesEquipamentoClick = {
+                    navController.navigate(Routes.DETALHES_EQUIPAMENTO)
+                },
                 onNovoEquipamentoClick = {
                     navController.navigate(Routes.EQUIPAMENTOS)
+                }
+            )
+        }
+
+        composable(Routes.DETALHES_CLIENTE) {
+            DetalhesClienteScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(Routes.DETALHES_EQUIPAMENTO) {
+            DetalhesEquipamentoScreen(
+                onBackClick = {
+                    navController.popBackStack()
                 }
             )
         }

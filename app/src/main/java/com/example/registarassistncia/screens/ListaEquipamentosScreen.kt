@@ -56,7 +56,7 @@ fun ListaEquipamentoScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable{
-
+                        onDetalhesEquipamentoClick()
                     }
             ) {
                 Column(

@@ -56,7 +56,7 @@ fun ListaClientesScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable{
-
+                    onDetalhesClienteClick()
                 }
 
         )
