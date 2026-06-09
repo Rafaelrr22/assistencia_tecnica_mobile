@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.registarassistncia.ui.theme.RegistarAssistênciaTheme
 import androidx.compose.foundation.Image
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CheckboxDefaults.colors
 import androidx.compose.ui.graphics.Color
@@ -168,13 +169,18 @@ fun HomeScreen(modifier: Modifier = Modifier,
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         //BOTÕES
 
         Button(
-            onClick = onNovaAssistenciaClick
-        ) {
+            onClick = onNovaAssistenciaClick,
+            modifier = Modifier.fillMaxWidth(0.65f),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 6.dp
+            )
+        )
+        {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = null
@@ -182,7 +188,10 @@ fun HomeScreen(modifier: Modifier = Modifier,
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text("Nova Assistência")
+            Text(
+                text = "Nova Assistência",
+                style = MaterialTheme.typography.titleMedium
+            )
         }
 
 /*
