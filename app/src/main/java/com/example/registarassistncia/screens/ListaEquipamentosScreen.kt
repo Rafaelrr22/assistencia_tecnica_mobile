@@ -39,13 +39,15 @@ fun ListaEquipamentoScreen(
             style = MaterialTheme.typography.headlineMedium
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
+
         Text(
             text = "3 Registados",
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         val equipamento = listOf(
             Triple("Portátil Asus", "Portátil", "ABC123"),
@@ -141,7 +143,8 @@ fun ListaEquipamentoScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(
-            onClick = onBackClick
+            onClick = onBackClick,
+            modifier = Modifier.fillMaxWidth(0.65f)
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
