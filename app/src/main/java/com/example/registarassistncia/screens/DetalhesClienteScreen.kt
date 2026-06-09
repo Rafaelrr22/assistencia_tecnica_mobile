@@ -139,7 +139,7 @@ fun DetalhesClienteScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(
-            onClick = {},
+            onClick = onBackClick,
             modifier = Modifier.fillMaxWidth(0.5f)
         ) {
             Icon(Icons.Default.ArrowBack, null)
