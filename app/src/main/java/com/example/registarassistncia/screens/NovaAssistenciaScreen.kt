@@ -32,6 +32,10 @@ import androidx.compose.material.icons.filled.BuildCircle
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun NovaAssistenciaScreen(
@@ -43,6 +47,7 @@ fun NovaAssistenciaScreen(
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding()
+            .verticalScroll(rememberScrollState())
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -165,7 +170,7 @@ fun NovaAssistenciaScreen(
 
                     Spacer(modifier = Modifier.width(4.dp))
 
-                    Text("solução")
+                    Text("Solução")
                 }
             },
             minLines = 4,
@@ -194,9 +199,47 @@ fun NovaAssistenciaScreen(
         )
 
         //CAMPO ESTADO
+        var estado by remember {mutableStateOf("")}
 
+        OutlinedTextField(
+            value = estado,
+            onValueChange = {estado = it},
+            label = {
+                Row {
+                    Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = null
+                            )
+                    Spacer(modifier = Modifier.width(4.dp))
 
-        //CAMPO DATA PREVISTA
+                    Text("Estado")
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // CAMPO DATA PREVISTA
+        var dataPrevista by remember { mutableStateOf("15/06/2026") }
+
+        OutlinedTextField(
+            value = dataPrevista,
+            onValueChange = { dataPrevista = it },
+            label = {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Text("Data Prevista")
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
 
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -205,7 +248,7 @@ fun NovaAssistenciaScreen(
         //BOTÕES
         Button(
             onClick = {},
-            modifier = Modifier.fillMaxWidth(0.5f)
+            modifier = Modifier.fillMaxWidth(0.6f)
         ) {
 
             Icon(
