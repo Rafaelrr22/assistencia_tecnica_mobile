@@ -88,6 +88,7 @@ fun AppNavigation() {
                 onBackClick = {
                     navController.popBackStack()
                 },
+                onDetalhesClienteClick = { },
                 onNovoClienteClick = {
                     navController.navigate(Routes.CLIENTES)
                 }
@@ -100,6 +101,7 @@ fun AppNavigation() {
                 onBackClick = {
                     navController.popBackStack()
                 },
+                onDetalhesEquipamentoClick = {},
                 onNovoEquipamentoClick = {
                     navController.navigate(Routes.EQUIPAMENTOS)
                 }
