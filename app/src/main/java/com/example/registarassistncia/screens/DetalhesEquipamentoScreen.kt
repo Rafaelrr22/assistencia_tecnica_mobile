@@ -53,7 +53,7 @@ fun DetalhesEquipamentoScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Computer, null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Portátil")
+                    Text("Equipamento")
                 }
 
                 Text("Portátil Asus")
