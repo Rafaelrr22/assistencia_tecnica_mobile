@@ -48,6 +48,7 @@ import com.example.registarassistncia.data.entity.ClienteEntity
 fun DetalhesClienteScreen(
     modifier: Modifier = Modifier,
     clienteId: Int,
+    onEditarClick: (Int) -> Unit,
     onBackClick: () -> Unit
 )
 
@@ -159,7 +160,11 @@ fun DetalhesClienteScreen(
 
             // BOTÃO EDITAR
         Button(
-            onClick = { },
+            onClick = {
+                cliente?.let {
+                    onEditarClick(it.id)
+                }
+            },
             modifier = Modifier.fillMaxWidth(0.5f)
         ) {
             Icon(Icons.Default.Edit, null)
@@ -195,8 +200,6 @@ fun DetalhesClienteScreen(
     }
 
         //CONFIRMAÇÃO AO APAGAR
-
-
 
     if (mostrarDialog) {
 

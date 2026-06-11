@@ -117,10 +117,35 @@ fun AppNavigation() {
                 clienteId = clienteId,
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onEditarClick = { id ->
+
+                    navController.navigate(
+                        "${Routes.EDITAR_CLIENTE_BASE}/$id"
+                    )
                 }
             )
         }
 
+        composable(
+            route = Routes.EDITAR_CLIENTE
+        ) { backStackEntry ->
+
+            val clienteId =
+                backStackEntry.arguments
+                    ?.getString("clienteId")
+                    ?.toIntOrNull()
+
+            ClienteScreen(
+                clienteId = clienteId,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onClienteGuardado = {
+                    navController.popBackStack()
+                }
+            )
+        }
 
 
         composable(Routes.NOVO_EQUIPAMENTO) {}
@@ -139,22 +164,7 @@ fun AppNavigation() {
             )
         }
 
-        composable(
-            route = Routes.DETALHES_CLIENTE
-        ) { backStackEntry ->
 
-            val clienteId =
-                backStackEntry.arguments
-                    ?.getString("clienteId")
-                    ?.toIntOrNull() ?: 0
-
-            DetalhesClienteScreen(
-                clienteId = clienteId,
-                onBackClick = {
-                    navController.popBackStack()
-                }
-            )
-        }
 
         composable(Routes.DETALHES_EQUIPAMENTO) {
             DetalhesEquipamentoScreen(

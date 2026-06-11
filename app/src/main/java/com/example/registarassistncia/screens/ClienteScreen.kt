@@ -41,14 +41,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-
 import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.ClienteEntity
 import android.widget.Toast
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun ClienteScreen(
     modifier: Modifier = Modifier,
+    clienteId: Int? = null,
     onBackClick: () -> Unit,
     onClienteGuardado: () -> Unit
 )
@@ -67,6 +68,26 @@ fun ClienteScreen(
     var morada by remember { mutableStateOf("") }
     var tipoCliente by remember { mutableStateOf("PARTICULAR") }
 
+    LaunchedEffect(clienteId) {
+
+        if (clienteId != null) {
+
+            val db = DatabaseProvider.getDatabase(context)
+
+            db.clienteDao()
+                .obterPorId(clienteId)
+                ?.let {
+
+                    nome = it.nome
+                    telefone = it.telefone
+                    email = it.email
+                    nif = it.nif
+                    morada = it.morada
+                    tipoCliente = it.tipoCliente
+                }
+        }
+    }
+
 
     Column(
         modifier = modifier
@@ -78,7 +99,11 @@ fun ClienteScreen(
             verticalArrangement = Arrangement.Top
     ) {
         Text(
-            text = "Novo Cliente",
+            text =
+                if (clienteId == null)
+                    "Novo Cliente"
+                else
+                    "Editar Cliente",
             style = MaterialTheme.typography.headlineMedium
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -257,15 +282,60 @@ fun ClienteScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        //BOTÕES
+
         Button(
             onClick = {
+
                 scope.launch {
 
                     val db = DatabaseProvider.getDatabase(context)
 
-                    val resultado =
-                        db.clienteDao().inserir(
+                    if (clienteId == null) {
+
+                        val resultado =
+                            db.clienteDao().inserir(
+                                ClienteEntity(
+                                    nome = nome,
+                                    telefone = telefone,
+                                    email = email,
+                                    nif = nif,
+                                    morada = morada,
+                                    tipoCliente = tipoCliente
+                                )
+                            )
+
+                        if (resultado == -1L) {
+
+                            Toast.makeText(
+                                context,
+                                "Já existe um cliente com este NIF",
+                                Toast.LENGTH_LONG
+                            ).show()
+
+                        } else {
+
+                            Toast.makeText(
+                                context,
+                                "Cliente criado com sucesso",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            onClienteGuardado()
+
+                            nome = ""
+                            telefone = ""
+                            email = ""
+                            nif = ""
+                            morada = ""
+                            tipoCliente = "PARTICULAR"
+                        }
+
+                    } else {
+
+                        db.clienteDao().atualizar(
                             ClienteEntity(
+                                id = clienteId,
                                 nome = nome,
                                 telefone = telefone,
                                 email = email,
@@ -275,33 +345,17 @@ fun ClienteScreen(
                             )
                         )
 
-                    if (resultado == -1L) {
-
                         Toast.makeText(
                             context,
-                            "Já existe um cliente com este NIF",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                    } else {
-
-                        Toast.makeText(
-                            context,
-                            "Cliente criado com sucesso",
+                            "Cliente atualizado com sucesso",
                             Toast.LENGTH_SHORT
                         ).show()
 
                         onClienteGuardado()
-
-                        nome = ""
-                        telefone = ""
-                        email = ""
-                        nif = ""
-                        morada = ""
-                        tipoCliente = "PARTICULAR"
                     }
                 }
             },
+
             modifier = Modifier.fillMaxWidth(0.5f)
         ) {
             Icon(
@@ -311,7 +365,12 @@ fun ClienteScreen(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text("Guardar Cliente")
+            Text(
+                if (clienteId == null)
+                    "Guardar Cliente"
+                else
+                    "Atualizar Cliente"
+            )
         }
 
         Spacer(modifier = Modifier.height(8.dp))

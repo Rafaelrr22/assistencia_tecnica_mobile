@@ -24,6 +24,10 @@ object Routes {
 
     const val DETALHES_CLIENTE_BASE = "detalhes_cliente"
 
+    const val EDITAR_CLIENTE = "editar_cliente/{clienteId}"
+
+    const val EDITAR_CLIENTE_BASE = "editar_cliente"
+
 
 
     //ROTAS EQUIPAMENTO
