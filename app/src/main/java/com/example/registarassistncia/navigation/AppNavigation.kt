@@ -58,8 +58,10 @@ fun AppNavigation() {
             ClienteScreen(
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onClienteGuardado = {
+                    navController.popBackStack()
                 }
-
             )
         }
         composable(Routes.EQUIPAMENTOS) {

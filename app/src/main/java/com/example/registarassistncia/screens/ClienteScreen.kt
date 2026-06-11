@@ -47,7 +47,8 @@ import android.widget.Toast
 @Composable
 fun ClienteScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onClienteGuardado: () -> Unit
 )
 
 
@@ -285,6 +286,8 @@ fun ClienteScreen(
                             "Cliente criado com sucesso",
                             Toast.LENGTH_SHORT
                         ).show()
+
+                        onClienteGuardado()
 
                         nome = ""
                         telefone = ""
