@@ -39,16 +39,47 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import android.widget.Toast
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.launch
+
+import com.example.registarassistncia.data.database.DatabaseProvider
+import com.example.registarassistncia.data.entity.EquipamentoEntity
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EquipamentoScreen (
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onEquipamentoGuardado: () -> Unit
 )
 
 {
+    //VARIAVEIS
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    var marca by remember { mutableStateOf("") }
+    var modelo by remember { mutableStateOf("") }
+    var numSerie by remember { mutableStateOf("") }
+
+    var expanded by remember { mutableStateOf(false) }
+
+    val tiposEquipamento = listOf(
+        "PORTÁTIL",
+        "DESKTOP",
+        "IMPRESSORA",
+        "MONITOR",
+        "SERVIDOR",
+        "OUTRO"
+    )
+
+    var tipoEquipamento by remember { mutableStateOf("PORTÁTIL") }
+
+
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -82,7 +113,6 @@ fun EquipamentoScreen (
 
 
                 // Campo Marca
-                var marca by remember { mutableStateOf("") }
 
                 OutlinedTextField(
                     value = marca,
@@ -104,7 +134,6 @@ fun EquipamentoScreen (
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Campo Modelo
-                var modelo by remember {mutableStateOf("")}
 
                 OutlinedTextField(
                     value = modelo,
@@ -126,7 +155,6 @@ fun EquipamentoScreen (
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Campo Numero Serie
-                var numSerie by remember { mutableStateOf("") }
 
                 OutlinedTextField(
                     value = numSerie,
@@ -149,8 +177,6 @@ fun EquipamentoScreen (
 
                 // Campo TipoEquipamento (com dropdown)
 
-                var expanded by remember { mutableStateOf(false) }
-
                 val tiposEquipamento = listOf(
                     "PORTÁTIL",
                     "DESKTOP",
@@ -160,7 +186,7 @@ fun EquipamentoScreen (
                     "OUTRO"
                 )
 
-                var tipoEquipamento by remember { mutableStateOf("PORTÁTIL") }
+                //TIPO EQUIPAMENTO
 
                 ExposedDropdownMenuBox(
                     expanded = expanded,
@@ -215,7 +241,47 @@ fun EquipamentoScreen (
         Spacer(modifier = modifier.height(16.dp))
 
         Button(
-            onClick = {},
+            onClick = {
+
+                scope.launch {
+
+                    val db = DatabaseProvider.getDatabase(context)
+
+                    val resultado =
+                        db.equipamentoDao().inserir(
+                            EquipamentoEntity(
+                                marca = marca,
+                                modelo = modelo,
+                                numeroSerie = numSerie,
+                                tipoEquipamento = tipoEquipamento
+                            )
+                        )
+
+                    if (resultado == -1L) {
+
+                        Toast.makeText(
+                            context,
+                            "Já existe um equipamento com este número de série",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                    } else {
+
+                        Toast.makeText(
+                            context,
+                            "Equipamento criado com sucesso",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        onEquipamentoGuardado()
+
+                        marca = ""
+                        modelo = ""
+                        numSerie = ""
+                        tipoEquipamento = "PORTÁTIL"
+                    }
+                }
+            },
             modifier = Modifier.fillMaxWidth(0.6f)
         ) {
 

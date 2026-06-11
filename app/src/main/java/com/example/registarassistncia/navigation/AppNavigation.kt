@@ -64,13 +64,18 @@ fun AppNavigation() {
                 }
             )
         }
+
         composable(Routes.EQUIPAMENTOS) {
             EquipamentoScreen(
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onEquipamentoGuardado = {
+                    navController.popBackStack()
                 }
             )
         }
+
         composable(Routes.NOVA_ASSISTENCIA) {
             NovaAssistenciaScreen(
                 onBackClick = {

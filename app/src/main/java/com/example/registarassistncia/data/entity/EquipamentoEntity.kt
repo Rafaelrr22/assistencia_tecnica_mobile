@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey
 
 data class EquipamentoEntity(
 
-    @PrimaryKey(true)
+    @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
     val  marca: String,
