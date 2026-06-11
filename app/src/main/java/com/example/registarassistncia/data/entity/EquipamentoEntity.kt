@@ -1,9 +1,13 @@
 package com.example.registarassistncia.data.entity
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "equipamentos")
+@Entity(tableName = "equipamentos",
+    indices = [
+        Index(value = ["numeroSerie"], unique = true)
+    ])
 
 data class EquipamentoEntity(
 
