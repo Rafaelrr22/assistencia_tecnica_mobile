@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Apartment
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Computer
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
@@ -27,10 +26,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.registarassistncia.data.entity.ClienteEntity
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import com.example.registarassistncia.data.database.DatabaseProvider
 
 @Composable
 fun ListaClientesScreen(
@@ -39,6 +44,25 @@ fun ListaClientesScreen(
     onDetalhesClienteClick: () -> Unit,
     onNovoClienteClick: () -> Unit
 ) {
+
+
+    val context = LocalContext.current
+    val clientes = remember {
+        mutableStateListOf<ClienteEntity>()
+    }
+
+
+    LaunchedEffect(Unit) {
+
+        val db = DatabaseProvider.getDatabase(context)
+
+        clientes.clear()
+
+        clientes.addAll(
+            db.clienteDao().listarTodos()
+        )
+    }
+
 
     Column(
         modifier = modifier
@@ -57,7 +81,7 @@ fun ListaClientesScreen(
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = "3 Registados",
+            text = "${clientes.size} Registados",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -65,13 +89,8 @@ fun ListaClientesScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
 
-    val clientes = listOf(
-        Triple("José", "929999999","Tipo: Particular"),
-        Triple("Ana", "969999999", "Tipo: Particular"),
-        Triple("Empresa XPT", "271982600", "Tipo: Empresa")
-    )
 
-    clientes.forEach { clientes ->
+    clientes.forEach { cliente ->
 
         Card(
             colors = CardDefaults.cardColors(
@@ -88,7 +107,12 @@ fun ListaClientesScreen(
                 }
 
         )
+
+
+
         {
+
+
          Column(
              modifier = Modifier.padding(16.dp)
          ) {
@@ -104,7 +128,7 @@ fun ListaClientesScreen(
                  Spacer(modifier = Modifier.width(8.dp))
 
                  Text(
-                     text = clientes.first,
+                     text = cliente.nome,
                      style = MaterialTheme.typography.titleLarge
                  )
              }
@@ -122,7 +146,7 @@ fun ListaClientesScreen(
                  Spacer(modifier = Modifier.width(8.dp))
 
                  Text(
-                     text = clientes.second,
+                     text = cliente.telefone,
                      style = MaterialTheme.typography.titleMedium
                  )
              }
@@ -140,7 +164,7 @@ fun ListaClientesScreen(
                  Spacer(modifier = Modifier.width(8.dp))
 
                  Text(
-                     text = clientes.third,
+                     text = cliente.tipoCliente,
                      style = MaterialTheme.typography.titleMedium
                  )
              }

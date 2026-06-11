@@ -15,7 +15,7 @@ interface ClienteDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun inserir(cliente: ClienteEntity): Long
 
-    @Query("SELECT * FROM clientes")
+    @Query("SELECT * FROM clientes ORDER BY nome ASC")
     suspend fun listarTodos(): List<ClienteEntity>
 
     @Update
