@@ -37,6 +37,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import androidx.compose.material3.AlertDialog
 
 import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.ClienteEntity
@@ -54,6 +57,13 @@ fun DetalhesClienteScreen(
 {
 
     val context = LocalContext.current
+
+    val scope = rememberCoroutineScope()
+
+    var mostrarDialog by remember {
+        mutableStateOf(false)
+    }
+
 
     var cliente by remember {
         mutableStateOf<ClienteEntity?>(null)
@@ -146,8 +156,8 @@ fun DetalhesClienteScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        //BOTÕES
 
+            // BOTÃO EDITAR
         Button(
             onClick = { },
             modifier = Modifier.fillMaxWidth(0.5f)
@@ -159,8 +169,11 @@ fun DetalhesClienteScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+            // BOTÃO APAGAR
         Button(
-            onClick = { },
+            onClick = {
+                mostrarDialog = true
+            },
             modifier = Modifier.fillMaxWidth(0.5f)
         ) {
             Icon(Icons.Default.Delete, null)
@@ -170,6 +183,7 @@ fun DetalhesClienteScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+            // BOTÃO VOLTAR
         Button(
             onClick = onBackClick,
             modifier = Modifier.fillMaxWidth(0.5f)
@@ -178,6 +192,59 @@ fun DetalhesClienteScreen(
             Spacer(modifier = Modifier.width(8.dp))
             Text("Voltar")
         }
+    }
 
+        //CONFIRMAÇÃO AO APAGAR
+
+
+
+    if (mostrarDialog) {
+
+        AlertDialog(
+            onDismissRequest = {
+                mostrarDialog = false
+        },
+            title = {
+                Text("Apagar Cliente")
+        },
+            text = {
+                Text("Tem a certeza que pretende apagar este cliente?")
+        },
+            confirmButton = {
+
+                Button(
+                    onClick = {
+
+                        mostrarDialog = false
+
+                        scope.launch {
+
+                         cliente?.let {
+
+                            val db = DatabaseProvider.getDatabase(context)
+
+                            db.clienteDao().apagar(it)
+
+                            onBackClick()
+                        }
+                    }
+                }
+            )
+             {
+                Text("Apagar")
+             }
+        },
+        dismissButton = {
+
+            Button(
+                onClick = {
+                    mostrarDialog = false
+                 }
+                )
+                {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }
