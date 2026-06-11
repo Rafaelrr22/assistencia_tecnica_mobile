@@ -35,6 +35,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.ClienteEntity
@@ -69,6 +71,7 @@ fun DetalhesClienteScreen(
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding()
+            .verticalScroll(rememberScrollState())
             .padding(24.dp)
 
     ) {

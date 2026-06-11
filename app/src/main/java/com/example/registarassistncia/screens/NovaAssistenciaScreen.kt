@@ -40,6 +40,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.graphics.Color
 
+
 @Composable
 fun NovaAssistenciaScreen(
     modifier: Modifier = Modifier,
