@@ -3,27 +3,53 @@ package com.example.registarassistncia.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Computer
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Numbers
-import androidx.compose.material3.*
-import androidx.compose.material3.SearchBarDefaults.colors
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.registarassistncia.data.database.DatabaseProvider
+import com.example.registarassistncia.data.entity.EquipamentoEntity
 
 @Composable
 fun ListaEquipamentoScreen(
     modifier: Modifier = Modifier,
     onNovoEquipamentoClick: () -> Unit,
-    onDetalhesEquipamentoClick: () -> Unit,
+    onDetalhesEquipamentoClick: (Int) -> Unit,
     onBackClick: () -> Unit
 ) {
+
+    val context = LocalContext.current
+
+    val equipamentos = remember {
+        mutableStateListOf<EquipamentoEntity>()
+    }
+
+    LaunchedEffect(Unit) {
+
+        val db = DatabaseProvider.getDatabase(context)
+
+        equipamentos.clear()
+
+        equipamentos.addAll(
+            db.equipamentoDao().listarTodos()
+        )
+    }
 
     Column(
         modifier = modifier
@@ -42,20 +68,14 @@ fun ListaEquipamentoScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "3 Registados",
+            text = "${equipamentos.size} Registados",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        val equipamento = listOf(
-            Triple("Portátil Asus", "Portátil", "ABC123"),
-            Triple("Desktop HP", "Desktop", "DEF456"),
-            Triple("Impressora HP", "Impressora", "GHI789")
-        )
-
-        equipamento.forEach { equipamento ->
+        equipamentos.forEach { equipamento ->
 
             Card(
                 colors = CardDefaults.cardColors(
@@ -67,7 +87,7 @@ fun ListaEquipamentoScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        onDetalhesEquipamentoClick()
+                        onDetalhesEquipamentoClick(equipamento.id)
                     }
             ) {
                 Column(
@@ -85,7 +105,7 @@ fun ListaEquipamentoScreen(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
-                            text = equipamento.first,
+                            text = equipamento.marca,
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
@@ -102,7 +122,9 @@ fun ListaEquipamentoScreen(
 
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        Text("Tipo: ${equipamento.second}")
+                        Text(
+                            text = equipamento.modelo
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -117,8 +139,16 @@ fun ListaEquipamentoScreen(
 
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        Text("Nº Série: ${equipamento.third}")
+                        Text(
+                            text = "Nº Série: ${equipamento.numeroSerie}"
+                        )
                     }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Tipo: ${equipamento.tipoEquipamento}"
+                    )
                 }
             }
 
@@ -150,7 +180,9 @@ fun ListaEquipamentoScreen(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = null
             )
+
             Spacer(modifier = Modifier.width(8.dp))
+
             Text("Voltar")
         }
     }
