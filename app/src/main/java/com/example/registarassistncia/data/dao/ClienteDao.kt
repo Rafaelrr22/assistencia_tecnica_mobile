@@ -18,6 +18,9 @@ interface ClienteDao {
     @Query("SELECT * FROM clientes ORDER BY nome ASC")
     suspend fun listarTodos(): List<ClienteEntity>
 
+    @Query ( "SELECT * FROM clientes WHERE id = :id")
+    suspend fun obterPorId(id: Int): ClienteEntity
+
     @Update
     suspend fun atualizar (cliente: ClienteEntity)
 

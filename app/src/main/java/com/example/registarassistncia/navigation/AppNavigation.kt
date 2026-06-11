@@ -91,13 +91,36 @@ fun AppNavigation() {
                     navController.popBackStack()
                 },
                 onDetalhesClienteClick = {
-                    navController.navigate(Routes.DETALHES_CLIENTE)
+                        clienteId ->
+                    navController.navigate(
+                        "${Routes.DETALHES_CLIENTE_BASE}/$clienteId"
+                    )
                 },
                 onNovoClienteClick = {
                     navController.navigate(Routes.CLIENTES)
                 }
             )
         }
+
+        composable(
+            route = Routes.DETALHES_CLIENTE
+        ) { backStackEntry ->
+
+            val clienteId =
+                backStackEntry.arguments
+                    ?.getString("clienteId")
+                    ?.toIntOrNull() ?: 0
+
+            DetalhesClienteScreen(
+                clienteId = clienteId,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+
+
         composable(Routes.NOVO_EQUIPAMENTO) {}
 
         composable(Routes.LISTA_EQUIPAMENTO) {
@@ -114,8 +137,17 @@ fun AppNavigation() {
             )
         }
 
-        composable(Routes.DETALHES_CLIENTE) {
+        composable(
+            route = Routes.DETALHES_CLIENTE
+        ) { backStackEntry ->
+
+            val clienteId =
+                backStackEntry.arguments
+                    ?.getString("clienteId")
+                    ?.toIntOrNull() ?: 0
+
             DetalhesClienteScreen(
+                clienteId = clienteId,
                 onBackClick = {
                     navController.popBackStack()
                 }

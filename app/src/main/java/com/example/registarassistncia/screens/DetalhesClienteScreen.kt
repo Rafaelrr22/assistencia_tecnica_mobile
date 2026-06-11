@@ -29,13 +29,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+
+import com.example.registarassistncia.data.database.DatabaseProvider
+import com.example.registarassistncia.data.entity.ClienteEntity
 
 @Composable
 fun DetalhesClienteScreen(
     modifier: Modifier = Modifier,
+    clienteId: Int,
     onBackClick: () -> Unit
 )
+
+
+
+
 {
+
+    val context = LocalContext.current
+
+    var cliente by remember {
+        mutableStateOf<ClienteEntity?>(null)
+    }
+
+    LaunchedEffect(clienteId) {
+
+        val db = DatabaseProvider.getDatabase(context)
+
+        cliente =
+            db.clienteDao().obterPorId(clienteId)
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -69,7 +98,7 @@ fun DetalhesClienteScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Nome")
                 }
-                Text("José Silva")
+                Text(cliente?.nome ?: "")
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -78,7 +107,7 @@ fun DetalhesClienteScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Nº telémovel")
                 }
-                Text("969999999")
+                Text(cliente?.telefone ?: "")
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -87,7 +116,7 @@ fun DetalhesClienteScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Email")
                 }
-                Text("jose@email.pt")
+                Text(cliente?.email ?: "")
 
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -97,7 +126,7 @@ fun DetalhesClienteScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("NIF")
                 }
-                Text("123456789")
+                Text(cliente?.nif ?: "")
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -106,7 +135,7 @@ fun DetalhesClienteScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Morada")
                 }
-                Text("Guarda")
+                Text(cliente?.morada ?: "")
             }
         }
 
@@ -125,7 +154,7 @@ fun DetalhesClienteScreen(
             Text("Editar")
         }
 
-
+        Spacer(modifier = Modifier.height(8.dp))
 
         Button(
             onClick = { },

@@ -20,7 +20,9 @@ object Routes {
 
     const val NOVO_CLIENTE = "novo_cliente"
 
-    const val DETALHES_CLIENTE = "detalhes_cliente"
+    const val DETALHES_CLIENTE = "detalhes_cliente/{clienteId}"
+
+    const val DETALHES_CLIENTE_BASE = "detalhes_cliente"
 
 
 
