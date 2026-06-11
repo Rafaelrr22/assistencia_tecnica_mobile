@@ -36,6 +36,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+
+import com.example.registarassistncia.data.database.DatabaseProvider
+import com.example.registarassistncia.data.entity.ClienteEntity
+import android.widget.Toast
 
 @Composable
 fun ClienteScreen(
@@ -43,7 +50,21 @@ fun ClienteScreen(
     onBackClick: () -> Unit
 )
 
+
+
 {
+    //VARIAVEIS
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    var nome by remember { mutableStateOf("") }
+    var telefone by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var nif by remember { mutableStateOf("") }
+    var morada by remember { mutableStateOf("") }
+    var tipoCliente by remember { mutableStateOf("PARTICULAR") }
+
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -73,7 +94,6 @@ fun ClienteScreen(
             ) {
 
                 // Campo Nome
-                var nome by remember { mutableStateOf(value = "") }
 
                 OutlinedTextField(
                     value = nome,
@@ -95,7 +115,6 @@ fun ClienteScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Campo Telefone
-                var telefone by remember   {mutableStateOf(value = "")}
 
                 OutlinedTextField(
                     value = telefone,
@@ -118,7 +137,6 @@ fun ClienteScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Campo Email
-                var email by remember { mutableStateOf(value = "") }
 
                 OutlinedTextField(
                     value = email,
@@ -141,7 +159,6 @@ fun ClienteScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Campo NIF
-                var nif by remember { mutableStateOf(value = "") }
 
                 OutlinedTextField(
                     value = nif,
@@ -164,7 +181,6 @@ fun ClienteScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Campo Morada
-                var morada by remember { mutableStateOf("") }
 
                 OutlinedTextField(
                     value = morada,
@@ -206,7 +222,6 @@ fun ClienteScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                var tipoCliente by remember { mutableStateOf("PARTICULAR") }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -238,7 +253,48 @@ fun ClienteScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = {},
+            onClick = {
+                scope.launch {
+
+                    val db = DatabaseProvider.getDatabase(context)
+
+                    val resultado =
+                        db.clienteDao().inserir(
+                            ClienteEntity(
+                                nome = nome,
+                                telefone = telefone,
+                                email = email,
+                                nif = nif,
+                                morada = morada,
+                                tipoCliente = tipoCliente
+                            )
+                        )
+
+                    if (resultado == -1L) {
+
+                        Toast.makeText(
+                            context,
+                            "Já existe um cliente com este NIF",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                    } else {
+
+                        Toast.makeText(
+                            context,
+                            "Cliente criado com sucesso",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        nome = ""
+                        telefone = ""
+                        email = ""
+                        nif = ""
+                        morada = ""
+                        tipoCliente = "PARTICULAR"
+                    }
+                }
+            },
             modifier = Modifier.fillMaxWidth(0.5f)
         ) {
             Icon(
