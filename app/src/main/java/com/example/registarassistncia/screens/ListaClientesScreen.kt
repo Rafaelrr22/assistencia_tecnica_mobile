@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Apartment
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
@@ -41,7 +42,7 @@ import com.example.registarassistncia.data.database.DatabaseProvider
 fun ListaClientesScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onDetalhesClienteClick: () -> Unit,
+    onDetalhesClienteClick: (Int) -> Unit,
     onNovoClienteClick: () -> Unit
 ) {
 
@@ -90,6 +91,15 @@ fun ListaClientesScreen(
 
 
 
+        if (clientes.isEmpty()) {
+
+            Text(
+                text = "Nenhum cliente registado",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+
+
     clientes.forEach { cliente ->
 
         Card(
@@ -103,7 +113,7 @@ fun ListaClientesScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable{
-                    onDetalhesClienteClick()
+                    onDetalhesClienteClick(cliente.id)
                 }
 
         )
@@ -164,9 +174,23 @@ fun ListaClientesScreen(
                  Spacer(modifier = Modifier.width(8.dp))
 
                  Text(
-                     text = cliente.tipoCliente,
+                     text = cliente.tipoCliente.lowercase()
+                         .replaceFirstChar { it.uppercase() },
                      style = MaterialTheme.typography.titleMedium
                  )
+             }
+
+             Row(
+                 verticalAlignment = Alignment.CenterVertically
+             ) {
+                 Icon(
+                     imageVector = Icons.Default.Badge,
+                     contentDescription = null
+                 )
+
+                 Spacer(modifier = Modifier.width(8.dp))
+
+                 Text(cliente.nif)
              }
 
          }
