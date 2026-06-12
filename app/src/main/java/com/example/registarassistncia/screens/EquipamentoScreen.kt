@@ -52,6 +52,7 @@ import com.example.registarassistncia.data.entity.EquipamentoEntity
 @Composable
 fun EquipamentoScreen (
     modifier: Modifier = Modifier,
+    equipamentoId: Int? = null,
     onBackClick: () -> Unit,
     onEquipamentoGuardado: () -> Unit
 )

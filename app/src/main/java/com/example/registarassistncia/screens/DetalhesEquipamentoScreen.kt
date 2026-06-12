@@ -16,12 +16,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import com.example.registarassistncia.data.database.DatabaseProvider
+import com.example.registarassistncia.data.entity.EquipamentoEntity
 
 @Composable
 fun DetalhesEquipamentoScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    equipamentoId: Int,
+    onBackClick: () -> Unit,
+    onEditarClick: (Int) -> Unit
 ) {
+
+    val context = LocalContext.current
+
+    var equipamento by remember {
+        mutableStateOf<EquipamentoEntity?>(null)
+    }
+
+    LaunchedEffect(equipamentoId) {
+
+        val db = DatabaseProvider.getDatabase(context)
+
+        equipamento =
+            db.equipamentoDao().obterPorId(equipamentoId)
+    }
+
+
 
     Column(
         modifier = modifier
@@ -58,7 +84,7 @@ fun DetalhesEquipamentoScreen(
                     Text("Equipamento")
                 }
 
-                Text("Portátil Asus")
+                Text("${equipamento?.marca ?: ""} ${equipamento?.modelo ?: ""}")
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -67,7 +93,7 @@ fun DetalhesEquipamentoScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Tipo")
                 }
-                Text("Portátil")
+                Text(equipamento?.tipoEquipamento ?: "")
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -76,7 +102,7 @@ fun DetalhesEquipamentoScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Nº Série")
                 }
-                Text("ABC213")
+                Text(equipamento?.numeroSerie ?: "")
             }
         }
 
@@ -85,7 +111,11 @@ fun DetalhesEquipamentoScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = {},
+            onClick = {
+                equipamento?.let {
+                    onEditarClick(it.id)
+                }
+            },
             modifier = Modifier.fillMaxWidth(0.5f)
         ) {
             Icon(Icons.Default.Edit, null)

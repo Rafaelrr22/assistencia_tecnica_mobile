@@ -160,8 +160,8 @@ fun AppNavigation() {
                 onBackClick = {
                     navController.popBackStack()
                 },
-                onDetalhesEquipamentoClick = {
-                    navController.navigate(Routes.DETALHES_EQUIPAMENTO)
+                onDetalhesEquipamentoClick = { equipamentoId ->
+                    navController.navigate("${Routes.DETALHES_EQUIPAMENTO_BASE}/$equipamentoId")
                 },
                 onNovoEquipamentoClick = {
                     navController.navigate(Routes.EQUIPAMENTOS)
@@ -171,9 +171,44 @@ fun AppNavigation() {
 
 
 
-        composable(Routes.DETALHES_EQUIPAMENTO) {
+        composable(
+            route = Routes.DETALHES_EQUIPAMENTO
+        ) { backStackEntry ->
+
+            val equipamentoId =
+                backStackEntry.arguments
+                    ?.getString("equipamentoId")
+                    ?.toIntOrNull() ?: 0
+
             DetalhesEquipamentoScreen(
+                equipamentoId = equipamentoId,
                 onBackClick = {
+                    navController.popBackStack()
+                },
+                onEditarClick = { id ->
+
+                    navController.navigate(
+                        "${Routes.EDITAR_EQUIPAMENTO_BASE}/$id"
+                    )
+                }
+            )
+        }
+
+        composable(
+            route = Routes.EDITAR_EQUIPAMENTO
+        ) { backStackEntry ->
+
+            val equipamentoId =
+                backStackEntry.arguments
+                    ?.getString("equipamentoId")
+                    ?.toIntOrNull()
+
+            EquipamentoScreen(
+                equipamentoId = equipamentoId,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onEquipamentoGuardado = {
                     navController.popBackStack()
                 }
             )
