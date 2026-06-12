@@ -21,6 +21,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
+import androidx.compose.material3.AlertDialog
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
 import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.EquipamentoEntity
@@ -34,6 +37,12 @@ fun DetalhesEquipamentoScreen(
 ) {
 
     val context = LocalContext.current
+
+    val scope = rememberCoroutineScope()
+
+    var mostrarDialog by remember {
+        mutableStateOf(false)
+    }
 
     var equipamento by remember {
         mutableStateOf<EquipamentoEntity?>(null)
@@ -126,7 +135,9 @@ fun DetalhesEquipamentoScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(
-            onClick = {},
+            onClick = {
+                mostrarDialog = true
+            },
             modifier = Modifier.fillMaxWidth(0.5f)
         ) {
             Icon(Icons.Default.Delete, null)
@@ -144,5 +155,54 @@ fun DetalhesEquipamentoScreen(
             Spacer(modifier = Modifier.width(8.dp))
             Text("Voltar")
         }
+    }
+
+    if (mostrarDialog) {
+
+        AlertDialog(
+            onDismissRequest = {
+                mostrarDialog = false
+            },
+            title = {
+                Text("Apagar Equipamento")
+            },
+            text = {
+                Text("Tem a certeza que pretende apagar este equipamento?")
+            },
+            confirmButton = {
+
+                Button(
+                    onClick = {
+
+                        mostrarDialog = false
+
+                        scope.launch {
+
+                            equipamento?.let {
+
+                                val db =
+                                    DatabaseProvider.getDatabase(context)
+
+                                db.equipamentoDao().apagar(it)
+
+                                onBackClick()
+                            }
+                        }
+                    }
+                ) {
+                    Text("Apagar")
+                }
+            },
+            dismissButton = {
+
+                Button(
+                    onClick = {
+                        mostrarDialog = false
+                    }
+                ) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }
