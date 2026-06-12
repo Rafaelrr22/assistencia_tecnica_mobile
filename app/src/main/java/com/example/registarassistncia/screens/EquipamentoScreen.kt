@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import android.widget.Toast
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
@@ -79,6 +80,24 @@ fun EquipamentoScreen (
 
     var tipoEquipamento by remember { mutableStateOf("PORTÁTIL") }
 
+    LaunchedEffect(equipamentoId) {
+
+        if (equipamentoId != null) {
+
+            val db = DatabaseProvider.getDatabase(context)
+
+            db.equipamentoDao()
+                .obterPorId(equipamentoId)
+                ?.let {
+
+                    marca = it.marca
+                    modelo = it.modelo
+                    numSerie = it.numeroSerie
+                    tipoEquipamento = it.tipoEquipamento
+                }
+        }
+    }
+
 
 
     Column(
@@ -92,9 +111,14 @@ fun EquipamentoScreen (
     )
     {
         Text(
-            text = "Novo Equipamento",
+            text =
+                if (equipamentoId == null)
+                    "Novo Equipamento"
+                else
+                    "Editar Equipamento",
             style = MaterialTheme.typography.headlineMedium
         )
+
         Spacer(modifier = Modifier.height(8.dp))
 
         Card(
@@ -177,16 +201,6 @@ fun EquipamentoScreen (
                 Spacer(modifier = modifier.height(8.dp))
 
                 // Campo TipoEquipamento (com dropdown)
-
-                val tiposEquipamento = listOf(
-                    "PORTÁTIL",
-                    "DESKTOP",
-                    "IMPRESSORA",
-                    "MONITOR",
-                    "SERVIDOR",
-                    "OUTRO"
-                )
-
                 //TIPO EQUIPAMENTO
 
                 ExposedDropdownMenuBox(
@@ -248,9 +262,42 @@ fun EquipamentoScreen (
 
                     val db = DatabaseProvider.getDatabase(context)
 
-                    val resultado =
-                        db.equipamentoDao().inserir(
+                    if (equipamentoId == null) {
+
+                        val resultado =
+                            db.equipamentoDao().inserir(
+                                EquipamentoEntity(
+                                    marca = marca,
+                                    modelo = modelo,
+                                    numeroSerie = numSerie,
+                                    tipoEquipamento = tipoEquipamento
+                                )
+                            )
+
+                        if (resultado == -1L) {
+
+                            Toast.makeText(
+                                context,
+                                "Já existe um equipamento com este número de série",
+                                Toast.LENGTH_LONG
+                            ).show()
+
+                        } else {
+
+                            Toast.makeText(
+                                context,
+                                "Equipamento criado com sucesso",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            onEquipamentoGuardado()
+                        }
+
+                    } else {
+
+                        db.equipamentoDao().atualizar(
                             EquipamentoEntity(
+                                id = equipamentoId,
                                 marca = marca,
                                 modelo = modelo,
                                 numeroSerie = numSerie,
@@ -258,28 +305,13 @@ fun EquipamentoScreen (
                             )
                         )
 
-                    if (resultado == -1L) {
-
                         Toast.makeText(
                             context,
-                            "Já existe um equipamento com este número de série",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                    } else {
-
-                        Toast.makeText(
-                            context,
-                            "Equipamento criado com sucesso",
+                            "Equipamento atualizado com sucesso",
                             Toast.LENGTH_SHORT
                         ).show()
 
                         onEquipamentoGuardado()
-
-                        marca = ""
-                        modelo = ""
-                        numSerie = ""
-                        tipoEquipamento = "PORTÁTIL"
                     }
                 }
             },
@@ -293,7 +325,12 @@ fun EquipamentoScreen (
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text("Guardar Equipamento")
+            Text(
+                if (equipamentoId == null)
+                    "Guardar Equipamento"
+                else
+                    "Atualizar Equipamento"
+            )
         }
 
         Button(
