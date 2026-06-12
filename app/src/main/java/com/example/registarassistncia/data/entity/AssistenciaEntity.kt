@@ -7,22 +7,24 @@ import androidx.room.PrimaryKey
 
 data class AssistenciaEntity(
 
-    @PrimaryKey(true)
+    @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
-    val clinte: String,
+    val clinteId: Int,
 
-    val equipamento: String,
+    val equipamentoId: Int,
 
     val problema: String,
+
+    val estado: String,
 
     val diagnostico: String,
 
     val solucao: String,
 
-    val estado: String,
-
     val orcamento: Double,
 
-    val dataPrevista: String
+    val dataEntrada: String,
+
+    val dataSaida: String?
 )
