@@ -112,6 +112,10 @@ fun NovaAssistenciaScreen(
         mutableStateOf(false)
     }
 
+    var assistencia by remember {
+        mutableStateOf<AssistenciaEntity?>(null)
+    }
+
 
 
     LaunchedEffect(Unit) {
@@ -502,25 +506,51 @@ fun NovaAssistenciaScreen(
                         return@launch
                     }
 
-                    db.assistenciaDao().inserir(
-                        AssistenciaEntity(
-                            clienteId = clienteSelecionadoId!!,
-                            equipamentoId = equipamentoSelecionadoId!!,
-                            problema = problema,
-                            estado = "PENDENTE",
-                            diagnostico = "",
-                            solucao = "",
-                            orcamento = 0.0,
-                            dataEntrada = System.currentTimeMillis().toString(),
-                            dataSaida = null
-                        )
-                    )
+                    if (assistenciaId == null) {
 
-                    Toast.makeText(
-                        context,
-                        "Assistência criada",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        db.assistenciaDao().inserir(
+                            AssistenciaEntity(
+                                clienteId = clienteSelecionadoId!!,
+                                equipamentoId = equipamentoSelecionadoId!!,
+                                problema = problema,
+                                estado = estado.ifBlank { "PENDENTE" },
+                                diagnostico = diagnostico,
+                                solucao = solucao,
+                                orcamento = orcamento.toDoubleOrNull() ?: 0.0,
+                                dataEntrada = System.currentTimeMillis().toString(),
+                                dataSaida = null
+                            )
+                        )
+
+                        Toast.makeText(
+                            context,
+                            "Assistência criada",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                    } else {
+
+                        db.assistenciaDao().atualizar(
+                            AssistenciaEntity(
+                                id = assistenciaId,
+                                clienteId = clienteSelecionadoId!!,
+                                equipamentoId = equipamentoSelecionadoId!!,
+                                problema = problema,
+                                estado = estado,
+                                diagnostico = diagnostico,
+                                solucao = solucao,
+                                orcamento = orcamento.toDoubleOrNull() ?: 0.0,
+                                dataEntrada = assistencia?.dataEntrada ?: "",
+                                dataSaida = assistencia?.dataSaida
+                            )
+                        )
+
+                        Toast.makeText(
+                            context,
+                            "Assistência atualizada",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
                     onAssistenciaGuardada()
                 }
@@ -534,7 +564,12 @@ fun NovaAssistenciaScreen(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text("Guardar Assistência")
+            Text(
+                if (assistenciaId == null)
+                    "Guardar Assistência"
+                else
+                    "Atualizar Assistência"
+            )
         }
 
 
