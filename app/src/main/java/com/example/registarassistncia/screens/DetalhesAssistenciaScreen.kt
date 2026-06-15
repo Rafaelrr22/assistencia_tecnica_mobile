@@ -27,8 +27,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material3.AlertDialog
+import kotlinx.coroutines.launch
 import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.AssistenciaEntity
 import com.example.registarassistncia.data.entity.ClienteEntity
@@ -38,7 +41,8 @@ import com.example.registarassistncia.data.entity.EquipamentoEntity
 fun DetalhesAssistenciaScreen(
     modifier: Modifier = Modifier,
     assistenciaId: Int,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onEditarClick: (Int) -> Unit
 ) {
 
 
@@ -55,6 +59,12 @@ fun DetalhesAssistenciaScreen(
 
     var equipamento by remember {
         mutableStateOf<EquipamentoEntity?>(null)
+    }
+
+    val scope = rememberCoroutineScope()
+
+    var mostrarDialog by remember {
+        mutableStateOf(false)
     }
 
     LaunchedEffect(assistenciaId) {
@@ -276,7 +286,13 @@ fun DetalhesAssistenciaScreen(
 
         // BOTÃO EDITAR
         Button(
-            onClick = {},
+            onClick = {
+
+                assistencia?.let {
+
+                    onEditarClick(it.id)
+                }
+            },
             modifier = Modifier.fillMaxWidth(0.5f)
         ) {
             Icon(
@@ -293,7 +309,7 @@ fun DetalhesAssistenciaScreen(
 
         // BOTÃO APAGAR
         Button(
-            onClick = {},
+            onClick = { mostrarDialog = true},
             modifier = Modifier.fillMaxWidth(0.5f)
         ) {
             Icon(
@@ -322,4 +338,57 @@ fun DetalhesAssistenciaScreen(
             Text("Voltar")
         }
     }
+
+    if (mostrarDialog) {
+
+        AlertDialog(
+            onDismissRequest = {
+                mostrarDialog = false
+            },
+            title = {
+                Text("Apagar Assistência")
+            },
+            text = {
+                Text(
+                    "Tem a certeza que pretende apagar esta assistência?"
+                )
+            },
+            confirmButton = {
+
+                Button(
+                    onClick = {
+
+                        mostrarDialog = false
+
+                        scope.launch {
+
+                            assistencia?.let {
+
+                                val db =
+                                    DatabaseProvider.getDatabase(context)
+
+                                db.assistenciaDao()
+                                    .apagar(it)
+
+                                onBackClick()
+                            }
+                        }
+                    }
+                ) {
+                    Text("Apagar")
+                }
+            },
+            dismissButton = {
+
+                Button(
+                    onClick = {
+                        mostrarDialog = false
+                    }
+                ) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
+
 }

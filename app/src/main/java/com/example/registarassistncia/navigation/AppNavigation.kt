@@ -105,6 +105,12 @@ fun AppNavigation() {
                 assistenciaId = assistenciaId,
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onEditarClick = { id ->
+
+                    navController.navigate(
+                        "${Routes.EDITAR_ASSISTENCIA_BASE}/$id"
+                    )
                 }
             )
         }
