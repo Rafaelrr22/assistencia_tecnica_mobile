@@ -17,7 +17,9 @@ object DatabaseProvider {
             context.applicationContext,
             AppDatabase::class.java,
             "assistencia_db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
 
         INSTANCE = instance
 

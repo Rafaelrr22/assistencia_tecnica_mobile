@@ -44,7 +44,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
-
+import androidx.compose.runtime.mutableStateListOf
+import com.example.registarassistncia.data.entity.ClienteEntity
 import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.EquipamentoEntity
 
@@ -80,16 +81,35 @@ fun EquipamentoScreen (
 
     var tipoEquipamento by remember { mutableStateOf("PORTÁTIL") }
 
+    val clientes = remember {
+        mutableStateListOf<ClienteEntity>()
+    }
+
+    var clienteExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    var clienteSelecionadoId by remember {
+        mutableStateOf<Int?>(null)
+    }
+
     LaunchedEffect(equipamentoId) {
 
-        if (equipamentoId != null) {
+        val db = DatabaseProvider.getDatabase(context)
 
-            val db = DatabaseProvider.getDatabase(context)
+        clientes.clear()
+
+        clientes.addAll(
+            db.clienteDao().listarTodos()
+        )
+
+        if (equipamentoId != null) {
 
             db.equipamentoDao()
                 .obterPorId(equipamentoId)
                 ?.let {
 
+                    clienteSelecionadoId = it.clienteId
                     marca = it.marca
                     modelo = it.modelo
                     numSerie = it.numeroSerie
@@ -97,6 +117,7 @@ fun EquipamentoScreen (
                 }
         }
     }
+
 
 
 
@@ -136,6 +157,60 @@ fun EquipamentoScreen (
 
                 //Campo Cliente Associado
 
+                Text(
+                    text = "Cliente",
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ExposedDropdownMenuBox(
+                    expanded = clienteExpanded,
+                    onExpandedChange = {
+                        clienteExpanded = !clienteExpanded
+                    }
+                ) {
+
+                    OutlinedTextField(
+                        value = clientes
+                            .find { it.id == clienteSelecionadoId }
+                            ?.nome ?: "",
+                        onValueChange = {},
+                        readOnly = true,
+                        label = {
+                            Text("Cliente")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = clienteExpanded,
+                        onDismissRequest = {
+                            clienteExpanded = false
+                        }
+                    ) {
+
+                        clientes.forEach { cliente ->
+
+                            DropdownMenuItem(
+                                text = {
+                                    Text(cliente.nome)
+                                },
+                                onClick = {
+
+                                    clienteSelecionadoId =
+                                        cliente.id
+
+                                    clienteExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // Campo Marca
 
@@ -262,12 +337,24 @@ fun EquipamentoScreen (
 
                     val db = DatabaseProvider.getDatabase(context)
 
+                    if (clienteSelecionadoId == null) {
+
+                        Toast.makeText(
+                            context,
+                            "Selecione um cliente",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        return@launch
+                    }
+
                     if (equipamentoId == null) {
 
                         val resultado =
                             db.equipamentoDao().inserir(
                                 EquipamentoEntity(
                                     marca = marca,
+                                    clienteId = clienteSelecionadoId!!,
                                     modelo = modelo,
                                     numeroSerie = numSerie,
                                     tipoEquipamento = tipoEquipamento
@@ -298,6 +385,7 @@ fun EquipamentoScreen (
                         db.equipamentoDao().atualizar(
                             EquipamentoEntity(
                                 id = equipamentoId,
+                                clienteId = clienteSelecionadoId!!,
                                 marca = marca,
                                 modelo = modelo,
                                 numeroSerie = numSerie,

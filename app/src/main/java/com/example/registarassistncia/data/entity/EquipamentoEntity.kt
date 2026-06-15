@@ -14,6 +14,8 @@ data class EquipamentoEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
+    val clienteId: Int,
+
     val  marca: String,
 
     val modelo: String,
