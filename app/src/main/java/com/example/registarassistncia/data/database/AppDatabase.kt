@@ -7,6 +7,7 @@ import com.example.registarassistncia.data.dao.EquipamentoDao
 import com.example.registarassistncia.data.entity.AssistenciaEntity
 import com.example.registarassistncia.data.entity.ClienteEntity
 import com.example.registarassistncia.data.entity.EquipamentoEntity
+import com.example.registarassistncia.data.dao.AssistenciaDao
 
 
 @Database(
@@ -16,7 +17,7 @@ import com.example.registarassistncia.data.entity.EquipamentoEntity
         AssistenciaEntity::class,
     ],
 
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 
@@ -25,4 +26,6 @@ import com.example.registarassistncia.data.entity.EquipamentoEntity
         abstract fun clienteDao(): ClienteDao
 
         abstract fun equipamentoDao(): EquipamentoDao
+
+        abstract fun assistenciaDao(): AssistenciaDao
     }

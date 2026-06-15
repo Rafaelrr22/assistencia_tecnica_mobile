@@ -80,9 +80,13 @@ fun AppNavigation() {
             NovaAssistenciaScreen(
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onAssistenciaGuardada = {
+                    navController.popBackStack()
                 }
             )
         }
+
         composable(Routes.DETALHE_ASSISTENCIA) {
             DetalhesAssistenciaScreen(
                 onBackClick = {
@@ -90,6 +94,7 @@ fun AppNavigation() {
                 }
             )
         }
+
         composable(Routes.NOVO_CLIENTE) {}
 
         composable(Routes.LISTA_CLIENTES) {

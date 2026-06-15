@@ -1,5 +1,6 @@
 package com.example.registarassistncia.screens
 
+import android.widget.Toast
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,14 +39,59 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import com.example.registarassistncia.data.database.DatabaseProvider
+import com.example.registarassistncia.data.entity.AssistenciaEntity
+import com.example.registarassistncia.data.entity.ClienteEntity
+import com.example.registarassistncia.data.entity.EquipamentoEntity
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun NovaAssistenciaScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onAssistenciaGuardada: () -> Unit
 ) {
+
+    //VARIÁVEIS
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    val clientes = remember {
+        mutableStateListOf<ClienteEntity>()
+    }
+
+    val equipamentos = remember {
+        mutableStateListOf<EquipamentoEntity>()
+    }
+
+    var clienteSelecionadoId by remember {
+        mutableStateOf<Int?>(null)
+    }
+
+    var equipamentoSelecionadoId by remember {
+        mutableStateOf<Int?>(null)
+    }
+
+    var problema by remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(Unit) {
+
+        val db = DatabaseProvider.getDatabase(context)
+
+        clientes.clear()
+
+        clientes.addAll(
+            db.clienteDao().listarTodos()
+        )
+    }
 
     Column(
         modifier = modifier
@@ -124,22 +170,14 @@ fun NovaAssistenciaScreen(
 
 
                 //CAMPO PROBLEMA
-                var problema by remember { mutableStateOf("") }
 
                 OutlinedTextField(
                     value = problema,
-                    onValueChange = { problema = it },
+                    onValueChange = {
+                        problema = it
+                    },
                     label = {
-                        Row {
-                            Icon(
-                                imageVector = Icons.Default.Warning,
-                                contentDescription = null
-                            )
-
-                            Spacer(modifier = Modifier.width(4.dp))
-
-                            Text("Problema")
-                        }
+                        Text("Problema")
                     },
                     minLines = 4,
                     modifier = Modifier.fillMaxWidth()
@@ -274,10 +312,59 @@ fun NovaAssistenciaScreen(
 
         //BOTÕES
         Button(
-            onClick = {},
+            onClick = {
+
+                scope.launch {
+
+                    val db = DatabaseProvider.getDatabase(context)
+
+                    if (clienteSelecionadoId == null) {
+
+                        Toast.makeText(
+                            context,
+                            "Selecione um cliente",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        return@launch
+                    }
+
+                    if (equipamentoSelecionadoId == null) {
+
+                        Toast.makeText(
+                            context,
+                            "Selecione um equipamento",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        return@launch
+                    }
+
+                    db.assistenciaDao().inserir(
+                        AssistenciaEntity(
+                            clienteId = clienteSelecionadoId!!,
+                            equipamentoId = equipamentoSelecionadoId!!,
+                            problema = problema,
+                            estado = "PENDENTE",
+                            diagnostico = "",
+                            solucao = "",
+                            orcamento = 0.0,
+                            dataEntrada = System.currentTimeMillis().toString(),
+                            dataSaida = null
+                        )
+                    )
+
+                    Toast.makeText(
+                        context,
+                        "Assistência criada",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    onAssistenciaGuardada()
+                }
+            },
             modifier = Modifier.fillMaxWidth(0.6f)
         ) {
-
             Icon(
                 imageVector = Icons.Default.Save,
                 contentDescription = null
@@ -288,8 +375,9 @@ fun NovaAssistenciaScreen(
             Text("Guardar Assistência")
         }
 
+
         Button(
-            onBackClick
+            onClick = onBackClick
         ) {
 
             Icon(

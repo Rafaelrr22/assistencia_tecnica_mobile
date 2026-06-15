@@ -10,7 +10,7 @@ data class AssistenciaEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
-    val clinteId: Int,
+    val clienteId: Int,
 
     val equipamentoId: Int,
 
