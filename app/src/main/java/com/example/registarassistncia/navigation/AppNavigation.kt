@@ -115,6 +115,26 @@ fun AppNavigation() {
             )
         }
 
+        composable(
+            route = Routes.EDITAR_ASSISTENCIA
+        ) { backStackEntry ->
+
+            val assistenciaId =
+                backStackEntry.arguments
+                    ?.getString("assistenciaId")
+                    ?.toIntOrNull()
+
+            NovaAssistenciaScreen(
+                assistenciaId = assistenciaId,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onAssistenciaGuardada = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
         composable(Routes.NOVO_CLIENTE) {}
 
         composable(Routes.LISTA_CLIENTES) {

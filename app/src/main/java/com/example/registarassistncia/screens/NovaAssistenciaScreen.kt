@@ -55,6 +55,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
 fun NovaAssistenciaScreen(
     modifier: Modifier = Modifier,
+    assistenciaId: Int? = null,
     onBackClick: () -> Unit,
     onAssistenciaGuardada: () -> Unit
 ) {
@@ -83,6 +84,26 @@ fun NovaAssistenciaScreen(
         mutableStateOf("")
     }
 
+    var diagnostico by remember {
+        mutableStateOf(value = "")
+    }
+
+    var solucao by remember {
+        mutableStateOf("")
+    }
+
+    var orcamento by remember {
+        mutableStateOf("")
+    }
+
+    var estado by remember {
+        mutableStateOf("")
+    }
+
+    var dataPrevista by remember {
+        mutableStateOf("15/06/2026")
+    }
+
     var clienteExpanded by remember {
         mutableStateOf(false)
     }
@@ -90,6 +111,8 @@ fun NovaAssistenciaScreen(
     var equipamentoExpanded by remember {
         mutableStateOf(false)
     }
+
+
 
     LaunchedEffect(Unit) {
 
@@ -100,6 +123,44 @@ fun NovaAssistenciaScreen(
         clientes.addAll(
             db.clienteDao().listarTodos()
         )
+    }
+
+    LaunchedEffect(assistenciaId) {
+
+        if (assistenciaId != null) {
+
+            val db = DatabaseProvider.getDatabase(context)
+
+            val assistencia =
+                db.assistenciaDao()
+                    .obterPorId(assistenciaId)
+
+            assistencia?.let {
+
+                clienteSelecionadoId = it.clienteId
+
+                equipamentoSelecionadoId = it.equipamentoId
+
+                equipamentos.clear()
+
+                equipamentos.addAll(
+                    db.equipamentoDao()
+                        .listarPorCliente(it.clienteId)
+                )
+
+                problema = it.problema
+
+                diagnostico = it.diagnostico
+
+                solucao = it.solucao
+
+                orcamento = it.orcamento.toString()
+
+                estado = it.estado
+
+
+            }
+        }
     }
 
     Column(
@@ -288,7 +349,7 @@ fun NovaAssistenciaScreen(
 
 
                 //CAMPO DIAGNÓSTICO
-                var diagnostico by remember { mutableStateOf(value = "") }
+
 
                 OutlinedTextField(
                     value = diagnostico,
@@ -312,7 +373,7 @@ fun NovaAssistenciaScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 //CAMOP SOLUÇÃO
-                var solucao by remember { mutableStateOf("") }
+
 
                 OutlinedTextField(
                     value = solucao,
@@ -336,7 +397,7 @@ fun NovaAssistenciaScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 //CAMPO ORÇAMENTO
-                var orcamento by remember { mutableStateOf("") }
+
 
                 OutlinedTextField(
                     value = orcamento,
@@ -359,7 +420,7 @@ fun NovaAssistenciaScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 //CAMPO ESTADO
-                var estado by remember {mutableStateOf("")}
+
 
                 OutlinedTextField(
                     value = estado,
@@ -381,7 +442,7 @@ fun NovaAssistenciaScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 // CAMPO DATA PREVISTA
-                var dataPrevista by remember { mutableStateOf("15/06/2026") }
+
 
                 OutlinedTextField(
                     value = dataPrevista,
