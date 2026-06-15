@@ -64,6 +64,14 @@ fun HomeScreen(modifier: Modifier = Modifier,
         mutableStateOf(0)
     }
 
+    var assistenciasPendentes by remember {
+        mutableStateOf(0)
+    }
+
+    var assistenciasConcluidas by remember {
+        mutableStateOf(0)
+    }
+
     LaunchedEffect(Unit) {
 
         val db = DatabaseProvider.getDatabase(context)
@@ -82,6 +90,14 @@ fun HomeScreen(modifier: Modifier = Modifier,
             db.assistenciaDao()
                 .listarTodas()
                 .size
+
+        assistenciasPendentes =
+            db.assistenciaDao()
+                .contarPendentes()
+
+        assistenciasConcluidas =
+            db.assistenciaDao()
+                .contarConcluidas()
     }
 
 
@@ -145,8 +161,16 @@ fun HomeScreen(modifier: Modifier = Modifier,
                 )
 
                 Text(
-                text = "$totalAssistencias Registadas",
-                style = MaterialTheme.typography.bodyLarge
+                    text = "$totalAssistencias Registadas",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+
+                Text(
+                    text = "Pendentes: $assistenciasPendentes"
+                )
+
+                Text(
+                    text = "Concluídas: $assistenciasConcluidas"
                 )
             }
         }

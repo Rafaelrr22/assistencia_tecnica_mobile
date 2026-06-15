@@ -27,4 +27,10 @@ interface AssistenciaDao {
     @Query("SELECT * FROM assistencias WHERE id = :id")
     suspend fun obterPorId(id: Int): AssistenciaEntity?
 
+    @Query("SELECT COUNT(*) FROM assistencias WHERE estado = 'PENDENTE'")
+    suspend fun contarPendentes(): Int
+
+    @Query("SELECT COUNT(*) FROM assistencias WHERE estado = 'CONCLUÍDA'")
+    suspend fun contarConcluidas(): Int
+
 }
