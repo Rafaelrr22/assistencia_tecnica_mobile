@@ -31,6 +31,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.AssistenciaEntity
+import com.example.registarassistncia.data.entity.ClienteEntity
+import com.example.registarassistncia.data.entity.EquipamentoEntity
 
 @Composable
 fun DetalhesAssistenciaScreen(
@@ -47,6 +49,14 @@ fun DetalhesAssistenciaScreen(
         mutableStateOf<AssistenciaEntity?>(null)
     }
 
+    var cliente by remember {
+        mutableStateOf<ClienteEntity?>(null)
+    }
+
+    var equipamento by remember {
+        mutableStateOf<EquipamentoEntity?>(null)
+    }
+
     LaunchedEffect(assistenciaId) {
 
         val db = DatabaseProvider.getDatabase(context)
@@ -54,6 +64,17 @@ fun DetalhesAssistenciaScreen(
         assistencia =
             db.assistenciaDao()
                 .obterPorId(assistenciaId)
+
+        assistencia?.let {
+
+            cliente =
+                db.clienteDao()
+                    .obterPorId(it.clienteId)
+
+            equipamento =
+                db.equipamentoDao()
+                    .obterPorId(it.equipamentoId)
+        }
     }
 
     Column(
@@ -100,7 +121,7 @@ fun DetalhesAssistenciaScreen(
                     Text("Cliente")
                 }
 
-                Text("José Silva")
+                Text(cliente?.nome ?: "")
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -118,7 +139,9 @@ fun DetalhesAssistenciaScreen(
                     Text("Equipamento")
                 }
 
-                Text("Portátil Asus")
+                Text(
+                    "${equipamento?.marca ?: ""} ${equipamento?.modelo ?: ""}"
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
