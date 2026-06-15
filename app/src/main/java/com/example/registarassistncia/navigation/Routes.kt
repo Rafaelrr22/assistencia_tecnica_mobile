@@ -8,9 +8,11 @@ object Routes {
     //ROTAS ASSISTENCIA
     const val ASSISTENCIAS = "assistencias"
 
-    const val DETALHE_ASSISTENCIA = "detalhe_assistencia"
-
     const val NOVA_ASSISTENCIA = "nova_assistencia"
+
+    const val DETALHES_ASSISTENCIA_BASE = "detalhes_assistencia"
+
+    const val DETALHES_ASSISTENCIA = "$DETALHES_ASSISTENCIA_BASE/{assistenciaId}"
 
 
     //ROTAS CLIENTE

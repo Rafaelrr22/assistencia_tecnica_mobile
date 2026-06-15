@@ -44,16 +44,21 @@ fun AppNavigation() {
                 }
             )
         }
+
         composable(Routes.ASSISTENCIAS) {
             ListaAssistenciasScreen(
                 onBackClick = {
                     navController.popBackStack()
                 },
-                        onDetalhesClick = {
-                    navController.navigate(Routes.DETALHE_ASSISTENCIA)
+                onDetalhesClick = { assistenciaId ->
+
+                    navController.navigate(
+                        "${Routes.DETALHES_ASSISTENCIA_BASE}/$assistenciaId"
+                    )
                 }
             )
         }
+
         composable(Routes.CLIENTES) {
             ClienteScreen(
                 onBackClick = {
@@ -87,8 +92,17 @@ fun AppNavigation() {
             )
         }
 
-        composable(Routes.DETALHE_ASSISTENCIA) {
+        composable(
+            route = Routes.DETALHES_ASSISTENCIA
+        ) { backStackEntry ->
+
+            val assistenciaId =
+                backStackEntry.arguments
+                    ?.getString("assistenciaId")
+                    ?.toIntOrNull() ?: 0
+
             DetalhesAssistenciaScreen(
+                assistenciaId = assistenciaId,
                 onBackClick = {
                     navController.popBackStack()
                 }

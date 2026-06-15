@@ -41,7 +41,7 @@ import com.example.registarassistncia.data.entity.AssistenciaEntity
 fun ListaAssistenciasScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onDetalhesClick: () -> Unit
+    onDetalhesClick: (Int) -> Unit
 ) {
 
     //Variáveis
@@ -103,7 +103,7 @@ fun ListaAssistenciasScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    onDetalhesClick()
+                    onDetalhesClick(assistencia.id)
                 }
         ) {
             Column(

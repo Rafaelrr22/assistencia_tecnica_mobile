@@ -23,12 +23,38 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import com.example.registarassistncia.data.database.DatabaseProvider
+import com.example.registarassistncia.data.entity.AssistenciaEntity
 
 @Composable
 fun DetalhesAssistenciaScreen(
     modifier: Modifier = Modifier,
+    assistenciaId: Int,
     onBackClick: () -> Unit
 ) {
+
+
+    //VARIÁVEIS
+    val context = LocalContext.current
+
+    var assistencia by remember {
+        mutableStateOf<AssistenciaEntity?>(null)
+    }
+
+    LaunchedEffect(assistenciaId) {
+
+        val db = DatabaseProvider.getDatabase(context)
+
+        assistencia =
+            db.assistenciaDao()
+                .obterPorId(assistenciaId)
+    }
 
     Column(
         modifier = modifier
@@ -126,7 +152,7 @@ fun DetalhesAssistenciaScreen(
                     Text("Problema")
                 }
 
-                Text("Não liga")
+                Text(assistencia?.problema ?: "")
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -144,7 +170,7 @@ fun DetalhesAssistenciaScreen(
                     Text("Diagnóstico")
                 }
 
-                Text("Por diagnosticar")
+                Text(assistencia?.diagnostico ?: "")
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -162,7 +188,7 @@ fun DetalhesAssistenciaScreen(
                     Text("Solução")
                 }
 
-                Text("Sem solução Aplicada")
+                Text(assistencia?.solucao ?: "")
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -181,7 +207,7 @@ fun DetalhesAssistenciaScreen(
                 }
 
                 Text(
-                    text = "Em Diagnóstico",
+                    text = assistencia?.estado ?: "",
                     color = Color(0xFFFF9800)
                 )
 
@@ -201,7 +227,7 @@ fun DetalhesAssistenciaScreen(
                     Text("Orçamento")
                 }
 
-                Text("65 €")
+                Text("${assistencia?.orcamento ?: 0.0} €")
 
                 Spacer(modifier = Modifier.height(12.dp))
 
