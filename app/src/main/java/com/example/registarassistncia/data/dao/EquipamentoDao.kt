@@ -23,7 +23,7 @@ interface EquipamentoDao{
     suspend fun apagar(equipamento: EquipamentoEntity)
 
 
-    @Query("SELECT * FROM equipamentos")
+    @Query("SELECT * FROM equipamentos ORDER BY marca ASC")
     suspend fun listarTodos(): List<EquipamentoEntity>
 
     @Query(

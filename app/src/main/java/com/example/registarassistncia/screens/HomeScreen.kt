@@ -28,9 +28,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CheckboxDefaults.colors
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.example.registarassistncia.R
+import com.example.registarassistncia.data.database.DatabaseProvider
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier,
@@ -40,6 +47,43 @@ fun HomeScreen(modifier: Modifier = Modifier,
                onEquipamentosClick: () -> Unit
               )
 {
+
+    //VARIÁVEIS
+
+    val context = LocalContext.current
+
+    var totalClientes by remember {
+        mutableStateOf(0)
+    }
+
+    var totalEquipamentos by remember {
+        mutableStateOf(0)
+    }
+
+    var totalAssistencias by remember {
+        mutableStateOf(0)
+    }
+
+    LaunchedEffect(Unit) {
+
+        val db = DatabaseProvider.getDatabase(context)
+
+        totalClientes =
+            db.clienteDao()
+                .listarTodos()
+                .size
+
+        totalEquipamentos =
+            db.equipamentoDao()
+                .listarTodos()
+                .size
+
+        totalAssistencias =
+            db.assistenciaDao()
+                .listarTodas()
+                .size
+    }
+
 
     Column(
         modifier = modifier
@@ -101,7 +145,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
                 )
 
                 Text(
-                text = "5 Ativas",
+                text = "$totalAssistencias Registadas",
                 style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -132,7 +176,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
                 )
 
                 Text(
-                    text = "20 Registados",
+                    text = "$totalClientes Registados",
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -163,7 +207,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
                 )
 
                 Text(
-                    text = "39 Registados",
+                    text = "$totalEquipamentos Registados",
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
