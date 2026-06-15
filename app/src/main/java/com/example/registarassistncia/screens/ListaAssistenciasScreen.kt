@@ -32,9 +32,35 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.AssistenciaEntity
 
+
+data class AssistenciaLista(
+    val assistencia: AssistenciaEntity,
+    val clienteNome: String,
+    val equipamentoNome: String
+)
+
+fun formatarData(timestamp: String): String {
+
+    return try {
+
+        val data = Date(timestamp.toLong())
+
+        SimpleDateFormat(
+            "dd/MM/yyyy HH:mm",
+            Locale.getDefault()
+        ).format(data)
+
+    } catch (e: Exception) {
+
+        ""
+    }
+}
 
 
 @Composable
@@ -48,7 +74,7 @@ fun ListaAssistenciasScreen(
     val context = LocalContext.current
 
     val assistencias = remember {
-        mutableStateListOf<AssistenciaEntity>()
+        mutableStateListOf<AssistenciaLista>()
     }
 
     LaunchedEffect(Unit) {
@@ -57,9 +83,27 @@ fun ListaAssistenciasScreen(
 
         assistencias.clear()
 
-        assistencias.addAll(
-            db.assistenciaDao().listarTodas()
-        )
+        db.assistenciaDao()
+            .listarTodas()
+            .forEach { assistencia ->
+
+                val cliente =
+                    db.clienteDao()
+                        .obterPorId(assistencia.clienteId)
+
+                val equipamento =
+                    db.equipamentoDao()
+                        .obterPorId(assistencia.equipamentoId)
+
+                assistencias.add(
+                    AssistenciaLista(
+                        assistencia = assistencia,
+                        clienteNome = cliente.nome,
+                        equipamentoNome =
+                            "${equipamento?.marca ?: ""} ${equipamento?.modelo ?: ""}"
+                    )
+                )
+            }
     }
 
     Column(
@@ -90,7 +134,7 @@ fun ListaAssistenciasScreen(
 
 
 
-    assistencias.forEach { assistencia ->
+    assistencias.forEach { item ->
 
         Card(
             elevation = CardDefaults.cardElevation(
@@ -103,7 +147,7 @@ fun ListaAssistenciasScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    onDetalhesClick(assistencia.id)
+                    onDetalhesClick(item.assistencia.id)
                 }
         ) {
             Column(
@@ -118,7 +162,7 @@ fun ListaAssistenciasScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    Text("Cliente ID: ${assistencia.clienteId}")
+                    Text(item.clienteNome)
                 }
 
 
@@ -131,7 +175,7 @@ fun ListaAssistenciasScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    Text("Cliente ID: ${assistencia.equipamentoId}")
+                    Text(item.equipamentoNome)
                 }
 
                 Row(
@@ -145,12 +189,12 @@ fun ListaAssistenciasScreen(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
-                        text = assistencia.estado,
+                        text = item.assistencia.estado,
                         color = when {
-                            assistencia.estado.contains("Diagnóstico") ->
+                            item.assistencia.estado.contains("Diagnóstico") ->
                                 Color(0xFFFF9800)
 
-                            assistencia.estado.contains("Concluída") ->
+                            item.assistencia.estado.contains("Concluída") ->
                                 Color(0xFF4CAF50)
 
                             else ->
@@ -169,7 +213,11 @@ fun ListaAssistenciasScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    Text(assistencia.dataEntrada)
+                    Text(
+                        formatarData(
+                            item.assistencia.dataEntrada
+                        )
+                    )
                 }
 
             }
