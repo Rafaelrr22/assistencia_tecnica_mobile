@@ -1,7 +1,6 @@
 package com.example.registarassistncia.screens
 
 import android.widget.Toast
-import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,45 +9,46 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.BuildCircle
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Icon
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.BuildCircle
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.AssistenciaEntity
 import com.example.registarassistncia.data.entity.ClienteEntity
 import com.example.registarassistncia.data.entity.EquipamentoEntity
 import kotlinx.coroutines.launch
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,8 +96,19 @@ fun NovaAssistenciaScreen(
         mutableStateOf("")
     }
 
+    val estados = listOf(
+        "PENDENTE",
+        "EM DIAGNÓSTICO",
+        "AGUARDA PEÇAS",
+        "CONCLUÍDA",
+        "ENTREGUE"
+    )
     var estado by remember {
-        mutableStateOf("")
+        mutableStateOf("PENDENTE")
+    }
+
+    var expandedEstado by remember {
+        mutableStateOf(false)
     }
 
     var dataPrevista by remember {
@@ -135,7 +146,7 @@ fun NovaAssistenciaScreen(
 
             val db = DatabaseProvider.getDatabase(context)
 
-            val assistencia =
+             assistencia =
                 db.assistenciaDao()
                     .obterPorId(assistenciaId)
 
@@ -182,9 +193,6 @@ fun NovaAssistenciaScreen(
             style = MaterialTheme.typography.headlineMedium
         )
 
-        Text(
-            text = "Clientes carregados: ${clientes.size}"
-        )
         Spacer(modifier = Modifier.height(12.dp))
 
         Card(
@@ -426,22 +434,57 @@ fun NovaAssistenciaScreen(
                 //CAMPO ESTADO
 
 
-                OutlinedTextField(
-                    value = estado,
-                    onValueChange = {estado = it},
-                    label = {
-                        Row {
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
+                ExposedDropdownMenuBox(
+                    expanded = expandedEstado,
+                    onExpandedChange = {
+                        expandedEstado = !expandedEstado
+                    }
+                ) {
 
-                            Text("Estado")
+                    OutlinedTextField(
+                        value = estado,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = {
+                            Row {
+                                Icon(
+                                    imageVector = Icons.Default.Info,
+                                    contentDescription = null
+                                )
+
+                                Spacer(modifier = Modifier.width(4.dp))
+
+                                Text("Estado")
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expandedEstado,
+                        onDismissRequest = {
+                            expandedEstado = false
                         }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    ) {
+
+                        estados.forEach { opcao ->
+
+                            DropdownMenuItem(
+                                text = {
+                                    Text(opcao)
+                                },
+                                onClick = {
+
+                                    estado = opcao
+
+                                    expandedEstado = false
+                                }
+                            )
+                        }
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
