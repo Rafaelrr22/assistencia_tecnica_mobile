@@ -24,10 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.BuildCircle
 import androidx.compose.material.icons.filled.AttachMoney
@@ -39,6 +36,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,8 +47,11 @@ import com.example.registarassistncia.data.entity.AssistenciaEntity
 import com.example.registarassistncia.data.entity.ClienteEntity
 import com.example.registarassistncia.data.entity.EquipamentoEntity
 import kotlinx.coroutines.launch
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NovaAssistenciaScreen(
     modifier: Modifier = Modifier,
@@ -82,6 +83,14 @@ fun NovaAssistenciaScreen(
         mutableStateOf("")
     }
 
+    var clienteExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    var equipamentoExpanded by remember {
+        mutableStateOf(false)
+    }
+
     LaunchedEffect(Unit) {
 
         val db = DatabaseProvider.getDatabase(context)
@@ -107,6 +116,10 @@ fun NovaAssistenciaScreen(
             text = "Nova Assistência",
             style = MaterialTheme.typography.headlineMedium
         )
+
+        Text(
+            text = "Clientes carregados: ${clientes.size}"
+        )
         Spacer(modifier = Modifier.height(12.dp))
 
         Card(
@@ -123,48 +136,136 @@ fun NovaAssistenciaScreen(
             ) {
 
                 //CAMPO CLIENTE
-                var cliente by remember { mutableStateOf("") }
-
-                OutlinedTextField(
-                    value = cliente,
-                    onValueChange = { cliente = it },
-                    label = {
-                        Row {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = null
-                            )
-
-                            Spacer(modifier = Modifier.width(4.dp))
-
-                            Text("Cliente")
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
+                Text(
+                    text = "Cliente",
+                    style = MaterialTheme.typography.titleMedium
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ExposedDropdownMenuBox(
+                    expanded = clienteExpanded,
+                    onExpandedChange = {
+                        clienteExpanded = !clienteExpanded
+                    }
+                ) {
+
+                    OutlinedTextField(
+                        value = clientes
+                            .find { it.id == clienteSelecionadoId }
+                            ?.nome ?: "",
+                        onValueChange = {},
+                        readOnly = true,
+                        label = {
+                            Text("Cliente")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = clienteExpanded,
+                        onDismissRequest = {
+                            clienteExpanded = false
+                        }
+                    ) {
+
+                        clientes.forEach { cliente ->
+
+                            DropdownMenuItem(
+                                text = {
+                                    Text(cliente.nome)
+                                },
+                                onClick = {
+
+                                    clienteSelecionadoId = cliente.id
+
+                                    equipamentoSelecionadoId = null
+
+                                    clienteExpanded = false
+
+                                    scope.launch {
+
+                                        val db =
+                                            DatabaseProvider.getDatabase(context)
+
+                                        equipamentos.clear()
+
+                                        equipamentos.addAll(
+                                            db.equipamentoDao()
+                                                .listarPorCliente(cliente.id)
+                                        )
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 //CAMPO EQUIPAMENTO
-                var equipamento by remember { mutableStateOf("") }
+                Spacer(modifier = Modifier.height(12.dp))
 
-                OutlinedTextField(
-                    value = equipamento,
-                    onValueChange = { equipamento = it },
-                    label = {
-                        Row {
-                            Icon(
-                                imageVector = Icons.Default.Build,
-                                contentDescription = null
-                            )
-
-                            Spacer(modifier = Modifier.width(4.dp))
-
-                            Text("Equipamento")
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
+                Text(
+                    text = "Equipamento",
+                    style = MaterialTheme.typography.titleMedium
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ExposedDropdownMenuBox(
+                    expanded = equipamentoExpanded,
+                    onExpandedChange = {
+                        equipamentoExpanded = !equipamentoExpanded
+                    }
+                ) {
+
+                    OutlinedTextField(
+                        value = equipamentos
+                            .find {
+                                it.id == equipamentoSelecionadoId
+                            }
+                            ?.let {
+                                "${it.marca} ${it.modelo}"
+                            } ?: "",
+                        onValueChange = {},
+                        readOnly = true,
+                        label = {
+                            Text("Equipamento")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = equipamentoExpanded,
+                        onDismissRequest = {
+                            equipamentoExpanded = false
+                        }
+                    ) {
+
+                        equipamentos.forEach { equipamento ->
+
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        "${equipamento.marca} ${equipamento.modelo}"
+                                    )
+                                },
+                                onClick = {
+
+                                    equipamentoSelecionadoId =
+                                        equipamento.id
+
+                                    equipamentoExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 

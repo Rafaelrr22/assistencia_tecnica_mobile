@@ -29,9 +29,7 @@ interface EquipamentoDao{
     @Query(
         "SELECT * FROM equipamentos WHERE clienteId = :clienteId"
     )
-    suspend fun listarPorCliente(
-        clienteId: Int
-    ): List<EquipamentoEntity>
+    suspend fun listarPorCliente(clienteId: Int): List<EquipamentoEntity>
 
 
     @Query("SELECT * FROM equipamentos WHERE id = :id")

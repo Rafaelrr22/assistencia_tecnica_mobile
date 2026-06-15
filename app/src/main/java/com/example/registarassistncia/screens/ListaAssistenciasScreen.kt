@@ -22,21 +22,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.CardDefaults
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import com.example.registarassistncia.data.database.DatabaseProvider
+import com.example.registarassistncia.data.entity.AssistenciaEntity
 
-
-data class AssistenciaFake(
-    val cliente: String,
-    val equipamento: String,
-    val estado: String,
-    val data: String
-)
 
 
 @Composable
@@ -45,6 +43,24 @@ fun ListaAssistenciasScreen(
     onBackClick: () -> Unit,
     onDetalhesClick: () -> Unit
 ) {
+
+    //Variáveis
+    val context = LocalContext.current
+
+    val assistencias = remember {
+        mutableStateListOf<AssistenciaEntity>()
+    }
+
+    LaunchedEffect(Unit) {
+
+        val db = DatabaseProvider.getDatabase(context)
+
+        assistencias.clear()
+
+        assistencias.addAll(
+            db.assistenciaDao().listarTodas()
+        )
+    }
 
     Column(
         modifier = modifier
@@ -62,17 +78,19 @@ fun ListaAssistenciasScreen(
         style = MaterialTheme.typography.headlineMedium
     )
 
+    Text(
+        text = "${assistencias.size} Registadas",
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.primary
+    )
+
     Spacer(modifier = Modifier.height(8.dp))
 
 
 
-    val assistencias = listOf(
-        AssistenciaFake("José",  "Portátil HP", "Estado: Em Diagnóstico", " Data: 08/06/2026"),
-        AssistenciaFake("Ana", "Desktop", "Estado: Concluída","Data: 05/06/2026"),
-        AssistenciaFake("Empresa Silva", "Impressora HP", "Estado: Aguardar Peças","Data: 08/06/2026")
-    )
 
-    assistencias.forEach { assistencias ->
+
+    assistencias.forEach { assistencia ->
 
         Card(
             elevation = CardDefaults.cardElevation(
@@ -100,7 +118,7 @@ fun ListaAssistenciasScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    Text(assistencias.cliente)
+                    Text("Cliente ID: ${assistencia.clienteId}")
                 }
 
 
@@ -113,7 +131,7 @@ fun ListaAssistenciasScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    Text(assistencias.equipamento)
+                    Text("Cliente ID: ${assistencia.equipamentoId}")
                 }
 
                 Row(
@@ -127,12 +145,12 @@ fun ListaAssistenciasScreen(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
-                        text = assistencias.estado,
+                        text = assistencia.estado,
                         color = when {
-                            assistencias.estado.contains("Diagnóstico") ->
+                            assistencia.estado.contains("Diagnóstico") ->
                                 Color(0xFFFF9800)
 
-                            assistencias.estado.contains("Concluída") ->
+                            assistencia.estado.contains("Concluída") ->
                                 Color(0xFF4CAF50)
 
                             else ->
@@ -151,7 +169,7 @@ fun ListaAssistenciasScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    Text(assistencias.data)
+                    Text(assistencia.dataEntrada)
                 }
 
             }
