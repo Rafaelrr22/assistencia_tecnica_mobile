@@ -38,6 +38,7 @@ import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
 import android.widget.Toast
 import android.widget.Toast.makeText
+import androidx.compose.material.icons.filled.Share
 import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
@@ -338,14 +339,24 @@ fun DetalhesAssistenciaScreen(
         Button(
                 onClick = {
 
-                    gerarPdfAssistencia(
+                    val ficheiro =  gerarPdfAssistencia(
                         context = context,
                         cliente = cliente?.nome ?: "",
                         equipamento =
                             "${equipamento?.marca ?: ""} ${equipamento?.modelo ?: ""}",
+                        data = formatarData(
+                            assistencia?.dataEntrada ?: ""
+                        ),
                         problema = assistencia?.problema ?: "",
-                        diagnostico = assistencia?.diagnostico ?: "",
-                        solucao = assistencia?.solucao ?: "",
+                        diagnostico =
+                            assistencia?.diagnostico
+                                ?.ifBlank { "Sem diagnóstico registado" }
+                                ?: "Sem diagnóstico registado",
+
+                                solucao =
+                                assistencia?.solucao
+                                ?.ifBlank { "Sem solução registada" }
+                                ?: "Sem solução registada",
                         estado = assistencia?.estado ?: "",
                         orcamento = assistencia?.orcamento ?: 0.0
                     )
@@ -361,6 +372,72 @@ fun DetalhesAssistenciaScreen(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text("PDF")
+        }
+
+        //BOTÃO PARTILHAR PDF
+
+        Button(
+            onClick = {
+
+                val ficheiro = gerarPdfAssistencia(
+                    context = context,
+                    cliente = cliente?.nome ?: "",
+                    equipamento =
+                        "${equipamento?.marca ?: ""} ${equipamento?.modelo ?: ""}",
+                    data = formatarData(
+                        assistencia?.dataEntrada ?: ""
+                    ),
+                    problema = assistencia?.problema ?: "",
+                    diagnostico =
+                        assistencia?.diagnostico
+                            ?.ifBlank { "Sem diagnóstico registado" }
+                            ?: "Sem diagnóstico registado",
+                    solucao =
+                        assistencia?.solucao
+                            ?.ifBlank { "Sem solução registada" }
+                            ?: "Sem solução registada",
+                    estado = assistencia?.estado ?: "",
+                    orcamento = assistencia?.orcamento ?: 0.0
+                )
+
+                val uri = FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.provider",
+                    ficheiro
+                )
+
+                val intent = Intent(Intent.ACTION_SEND).apply {
+
+                    type = "application/pdf"
+
+                    putExtra(
+                        Intent.EXTRA_STREAM,
+                        uri
+                    )
+
+                    addFlags(
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                }
+
+                context.startActivity(
+                    Intent.createChooser(
+                        intent,
+                        "Partilhar PDF"
+                    )
+                )
+            },
+            modifier = Modifier.fillMaxWidth(0.5f)
+        ) {
+
+            Icon(
+                imageVector = Icons.Default.Share,
+                contentDescription = null
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text("Partilhar")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -439,12 +516,13 @@ fun DetalhesAssistenciaScreen(
         context: Context,
         cliente: String,
         equipamento: String,
+        data: String,
         problema: String,
         diagnostico: String,
         solucao: String,
         estado: String,
         orcamento: Double
-    ) {
+    ): File {
 
         val pdfDocument = PdfDocument()
 
@@ -460,10 +538,10 @@ fun DetalhesAssistenciaScreen(
 
         val paint = Paint()
 
-        paint.textSize = 18f
+        paint.textSize = 22f
 
         canvas.drawText(
-            "Assistência Técnica",
+            "RELATÓRIO DE ASSISTÊNCIA TÉCNICA",
             40f,
             50f,
             paint
@@ -486,37 +564,44 @@ fun DetalhesAssistenciaScreen(
         )
 
         canvas.drawText(
-            "Problema: $problema",
+            "Data: $data",
             40f,
             160f,
             paint
         )
 
         canvas.drawText(
-            "Diagnóstico: $diagnostico",
+            "Problema: $problema",
             40f,
             190f,
             paint
         )
 
         canvas.drawText(
-            "Solução: $solucao",
+            "Diagnóstico: $diagnostico",
             40f,
             220f,
             paint
         )
 
         canvas.drawText(
-            "Estado: $estado",
+            "Solução: $solucao",
             40f,
             250f,
             paint
         )
 
         canvas.drawText(
-            "Orçamento: €$orcamento",
+            "Estado: $estado",
             40f,
             280f,
+            paint
+        )
+
+        canvas.drawText(
+            "Orçamento: %.2f €".format(orcamento),
+            40f,
+            310f,
             paint
         )
 
@@ -533,29 +618,13 @@ fun DetalhesAssistenciaScreen(
 
         pdfDocument.close()
 
-        val uri = FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.provider",
-            file
-        )
+        pdfDocument.close()
 
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-
-            setDataAndType(
-                uri,
-                "application/pdf"
-            )
-
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-
-        context.startActivity(intent)
-
-        makeText(
+        Toast.makeText(
             context,
             "PDF criado: ${file.name}",
             Toast.LENGTH_LONG
         ).show()
+
+        return file
     }
