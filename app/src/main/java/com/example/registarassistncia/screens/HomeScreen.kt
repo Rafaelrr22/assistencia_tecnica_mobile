@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.registarassistncia.ui.theme.RegistarAssistênciaTheme
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CheckboxDefaults.colors
@@ -145,6 +146,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
             ),
                     colors = CardDefaults.cardColors(
                         containerColor = Color(0xFFE3F2FD)
+
                     ),
             modifier = Modifier
                 .fillMaxWidth()
