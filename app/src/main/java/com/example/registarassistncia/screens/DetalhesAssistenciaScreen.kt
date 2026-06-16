@@ -1,5 +1,6 @@
 package com.example.registarassistncia.screens
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +33,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.AlertDialog
+import android.graphics.Paint
+import android.graphics.pdf.PdfDocument
+import android.widget.Toast
+import android.widget.Toast.makeText
+import java.io.File
+import java.io.FileOutputStream
 import kotlinx.coroutines.launch
 import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.AssistenciaEntity
@@ -324,6 +332,37 @@ fun DetalhesAssistenciaScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // BOTÃO PDF
+        Button(
+                onClick = {
+
+                    gerarPdfAssistencia(
+                        context = context,
+                        cliente = cliente?.nome ?: "",
+                        equipamento =
+                            "${equipamento?.marca ?: ""} ${equipamento?.modelo ?: ""}",
+                        problema = assistencia?.problema ?: "",
+                        diagnostico = assistencia?.diagnostico ?: "",
+                        solucao = assistencia?.solucao ?: "",
+                        estado = assistencia?.estado ?: "",
+                        orcamento = assistencia?.orcamento ?: 0.0
+                    )
+                },
+
+            modifier = Modifier.fillMaxWidth(0.5f)
+        ) {
+            Icon(
+                imageVector = Icons.Default.PictureAsPdf,
+                contentDescription = null
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text("PDF")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         // BOTÃO VOLTAR
         Button(
             onClick = onBackClick
@@ -392,3 +431,109 @@ fun DetalhesAssistenciaScreen(
     }
 
 }
+
+    //PDF
+    fun gerarPdfAssistencia(
+        context: Context,
+        cliente: String,
+        equipamento: String,
+        problema: String,
+        diagnostico: String,
+        solucao: String,
+        estado: String,
+        orcamento: Double
+    ) {
+
+        val pdfDocument = PdfDocument()
+
+        val pageInfo = PdfDocument.PageInfo.Builder(
+            595,
+            842,
+            1
+        ).create()
+
+        val page = pdfDocument.startPage(pageInfo)
+
+        val canvas = page.canvas
+
+        val paint = Paint()
+
+        paint.textSize = 18f
+
+        canvas.drawText(
+            "Assistência Técnica",
+            40f,
+            50f,
+            paint
+        )
+
+        paint.textSize = 14f
+
+        canvas.drawText(
+            "Cliente: $cliente",
+            40f,
+            100f,
+            paint
+        )
+
+        canvas.drawText(
+            "Equipamento: $equipamento",
+            40f,
+            130f,
+            paint
+        )
+
+        canvas.drawText(
+            "Problema: $problema",
+            40f,
+            160f,
+            paint
+        )
+
+        canvas.drawText(
+            "Diagnóstico: $diagnostico",
+            40f,
+            190f,
+            paint
+        )
+
+        canvas.drawText(
+            "Solução: $solucao",
+            40f,
+            220f,
+            paint
+        )
+
+        canvas.drawText(
+            "Estado: $estado",
+            40f,
+            250f,
+            paint
+        )
+
+        canvas.drawText(
+            "Orçamento: €$orcamento",
+            40f,
+            280f,
+            paint
+        )
+
+        pdfDocument.finishPage(page)
+
+        val file = File(
+            context.getExternalFilesDir(null),
+            "assistencia.pdf"
+        )
+
+        pdfDocument.writeTo(
+            FileOutputStream(file)
+        )
+
+        pdfDocument.close()
+
+        makeText(
+            context,
+            "PDF criado: ${file.name}",
+            Toast.LENGTH_LONG
+        ).show()
+    }
