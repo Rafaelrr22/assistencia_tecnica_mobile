@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.DropdownMenuItem
@@ -186,7 +187,7 @@ fun ListaAssistenciasScreen(
                 assistencias.add(
                     AssistenciaLista(
                         assistencia = assistencia,
-                        clienteNome = cliente.nome,
+                        clienteNome = cliente?.nome ?: "Cliente removido",
                         equipamentoNome =
                             "${equipamento?.marca ?: ""} ${equipamento?.modelo ?: ""}"
                     )
@@ -205,10 +206,12 @@ fun ListaAssistenciasScreen(
 
 
 
-    Text(
-        text = "Assistências",
-        style = MaterialTheme.typography.headlineMedium
-    )
+        Text(
+            text = "Assistências",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = pesquisa,
@@ -227,7 +230,7 @@ fun ListaAssistenciasScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         ExposedDropdownMenuBox(
             expanded = expandedFiltro,
@@ -241,7 +244,16 @@ fun ListaAssistenciasScreen(
                 onValueChange = {},
                 readOnly = true,
                 label = {
-                    Text("Filtrar por estado")
+                    Row {
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = null
+                        )
+
+                        Spacer(modifier = Modifier.width(4.dp))
+
+                        Text("Estado")
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -272,6 +284,8 @@ fun ListaAssistenciasScreen(
             }
         }
 
+        Spacer(modifier = Modifier.height(12.dp))
+
         ExposedDropdownMenuBox(
             expanded = expandedOrdenacao,
             onExpandedChange = {
@@ -284,12 +298,23 @@ fun ListaAssistenciasScreen(
                 onValueChange = {},
                 readOnly = true,
                 label = {
-                    Text("Ordenação")
+                    Row {
+                        Icon(
+                            imageVector = Icons.Default.SwapVert,
+                            contentDescription = null
+                        )
+
+                        Spacer(modifier = Modifier.width(4.dp))
+
+                        Text("Ordenação")
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor()
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             ExposedDropdownMenu(
                 expanded = expandedOrdenacao,
@@ -315,12 +340,14 @@ fun ListaAssistenciasScreen(
             }
         }
 
+        Spacer(modifier = Modifier.height(10.dp))
 
-    Text(
-        text = "${assistenciasFiltradas.size} Registadas",
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.primary
-    )
+
+        Text(
+            text = "${assistenciasFiltradas.size} Registadas",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
 
         if (assistenciasFiltradas.isEmpty()) {
 
@@ -332,7 +359,7 @@ fun ListaAssistenciasScreen(
             )
         }
 
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(12.dp))
 
 
 
@@ -395,15 +422,16 @@ fun ListaAssistenciasScreen(
                     Text(
                         text = item.assistencia.estado,
                         color = when {
-                            item.assistencia.estado.contains("Diagnóstico") ->
+                            item.assistencia.estado.uppercase().contains("DIAGNOSTICO") ->
                                 Color(0xFFFF9800)
 
-                            item.assistencia.estado.contains("Concluída") ->
+                            item.assistencia.estado.uppercase().contains("CONCLUIDA") ->
                                 Color(0xFF4CAF50)
 
                             else ->
                                 Color(0xFF2196F3)
-                        }
+                        },
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
 
@@ -440,9 +468,10 @@ fun ListaAssistenciasScreen(
         Text("Ver detalhes")
      }
 */
-    Button(
-        onClick = onBackClick
-    ) {
+        Button(
+            onClick = onBackClick,
+            modifier = Modifier.fillMaxWidth(0.65f)
+        ) {
         Text("Voltar")
         }
 
