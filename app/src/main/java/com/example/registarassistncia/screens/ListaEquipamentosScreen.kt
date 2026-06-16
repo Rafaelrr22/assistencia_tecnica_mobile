@@ -8,16 +8,21 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Computer
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Numbers
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +43,18 @@ fun ListaEquipamentoScreen(
 
     val equipamentos = remember {
         mutableStateListOf<EquipamentoEntity>()
+    }
+
+    var pesquisa by remember {
+        mutableStateOf("")
+    }
+
+    val equipamentosFiltrados = equipamentos.filter {
+
+                it.marca.contains(pesquisa, true) ||
+                it.modelo.contains(pesquisa, true) ||
+                it.numeroSerie.contains(pesquisa, true) ||
+                it.tipoEquipamento.contains(pesquisa, true)
     }
 
     LaunchedEffect(Unit) {
@@ -67,15 +84,44 @@ fun ListaEquipamentoScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        OutlinedTextField(
+            value = pesquisa,
+            onValueChange = {
+                pesquisa = it
+            },
+            label = {
+                Text("Procurar equipamento")
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null
+                )
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         Text(
-            text = "${equipamentos.size} Registados",
+            text = "${equipamentosFiltrados.size} Registados",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
 
+        if (equipamentosFiltrados.isEmpty()) {
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Nenhum equipamento encontrado",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+
         Spacer(modifier = Modifier.height(24.dp))
 
-        equipamentos.forEach { equipamento ->
+        equipamentosFiltrados.forEach { equipamento ->
 
             Card(
                 colors = CardDefaults.cardColors(
