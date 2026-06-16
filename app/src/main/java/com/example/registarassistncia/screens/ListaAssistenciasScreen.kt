@@ -29,6 +29,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -76,6 +79,7 @@ fun removerAcentos(texto: String): String {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListaAssistenciasScreen(
     modifier: Modifier = Modifier,
@@ -94,18 +98,44 @@ fun ListaAssistenciasScreen(
         mutableStateOf("")
     }
 
+    var filtroEstado by remember {
+        mutableStateOf("Todos")
+    }
+
+    var expandedFiltro by remember {
+        mutableStateOf(false)
+    }
+
+    val estadosFiltro = listOf(
+        "Todos",
+        "PENDENTE",
+        "EM DIAGNÓSTICO",
+        "AGUARDA PEÇAS",
+        "CONCLUÍDA",
+        "ENTREGUE"
+    )
+
     val pesquisaNormalizada =
         removerAcentos(pesquisa.lowercase())
 
-    val assistenciasFiltradas = assistencias.filter {
+    val assistenciasFiltradas = assistencias.filter { item ->
 
-                removerAcentos(it.clienteNome.lowercase()).contains(pesquisaNormalizada) ||
+        val correspondePesquisa =
 
-                removerAcentos(it.equipamentoNome.lowercase()).contains(pesquisaNormalizada) ||
+                    removerAcentos(item.clienteNome.lowercase()).contains(pesquisaNormalizada) ||
 
-                removerAcentos(it.assistencia.estado.lowercase()).contains(pesquisaNormalizada) ||
+                    removerAcentos(item.equipamentoNome.lowercase()).contains(pesquisaNormalizada) ||
 
-                removerAcentos(it.assistencia.problema.lowercase()).contains(pesquisaNormalizada)
+                    removerAcentos(item.assistencia.estado.lowercase()).contains(pesquisaNormalizada) ||
+
+                    removerAcentos(item.assistencia.problema.lowercase()).contains(pesquisaNormalizada)
+
+        val correspondeEstado =
+
+                    filtroEstado == "Todos" ||
+                    item.assistencia.estado == filtroEstado
+
+                     correspondePesquisa && correspondeEstado
     }
 
 
@@ -172,6 +202,50 @@ fun ListaAssistenciasScreen(
         )
 
         Spacer(modifier = Modifier.height(8.dp))
+
+        ExposedDropdownMenuBox(
+            expanded = expandedFiltro,
+            onExpandedChange = {
+                expandedFiltro = !expandedFiltro
+            }
+        ) {
+
+            OutlinedTextField(
+                value = filtroEstado,
+                onValueChange = {},
+                readOnly = true,
+                label = {
+                    Text("Filtrar por estado")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor()
+            )
+
+            ExposedDropdownMenu(
+                expanded = expandedFiltro,
+                onDismissRequest = {
+                    expandedFiltro = false
+                }
+            ) {
+
+                estadosFiltro.forEach { estado ->
+
+                    DropdownMenuItem(
+                        text = {
+                            Text(estado)
+                        },
+                        onClick = {
+
+                            filtroEstado = estado
+
+                            expandedFiltro = false
+                        }
+                    )
+                }
+            }
+        }
+
 
     Text(
         text = "${assistenciasFiltradas.size} Registadas",
