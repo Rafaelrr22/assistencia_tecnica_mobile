@@ -41,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.example.registarassistncia.data.database.DatabaseProvider
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -116,6 +117,16 @@ fun ListaClientesScreen(
                     contentDescription = null
                 )
             },
+
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = Color.DarkGray,
+                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                unfocusedLeadingIconColor = Color.DarkGray
+            ),
+
             modifier = Modifier.fillMaxWidth()
         )
 

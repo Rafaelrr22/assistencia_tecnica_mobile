@@ -34,6 +34,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -227,6 +228,16 @@ fun ListaAssistenciasScreen(
                     contentDescription = null
                 )
             },
+
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = Color.DarkGray,
+                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                unfocusedLeadingIconColor = Color.DarkGray
+            ),
+
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -255,6 +266,16 @@ fun ListaAssistenciasScreen(
                         Text("Estado")
                     }
                 },
+
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = Color.DarkGray,
+                    focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLeadingIconColor = Color.DarkGray
+                ),
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor()
@@ -309,6 +330,16 @@ fun ListaAssistenciasScreen(
                         Text("Ordenação")
                     }
                 },
+
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = Color.DarkGray,
+                    focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLeadingIconColor = Color.DarkGray
+                ),
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor()
