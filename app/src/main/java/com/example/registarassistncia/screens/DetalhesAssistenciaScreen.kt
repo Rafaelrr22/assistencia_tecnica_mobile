@@ -177,7 +177,13 @@ fun DetalhesAssistenciaScreen(
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    Text("Data: 08/06/2026")
+                    Text(
+                        "Data: ${
+                            formatarData(
+                                assistencia?.dataEntrada ?: ""
+                            )
+                        }"
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -353,13 +359,33 @@ fun DetalhesAssistenciaScreen(
                                 ?.ifBlank { "Sem diagnóstico registado" }
                                 ?: "Sem diagnóstico registado",
 
-                                solucao =
+                        solucao =
                                 assistencia?.solucao
                                 ?.ifBlank { "Sem solução registada" }
                                 ?: "Sem solução registada",
                         estado = assistencia?.estado ?: "",
                         orcamento = assistencia?.orcamento ?: 0.0
                     )
+
+                    val uri = FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.provider",
+                        ficheiro
+                    )
+
+                    val intent = Intent(Intent.ACTION_VIEW).apply {
+
+                        setDataAndType(
+                            uri,
+                            "application/pdf"
+                        )
+
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+
+                    context.startActivity(intent)
                 },
 
             modifier = Modifier.fillMaxWidth(0.5f)
@@ -571,37 +597,58 @@ fun DetalhesAssistenciaScreen(
         )
 
         canvas.drawText(
-            "Problema: $problema",
+            "Problema:",
             40f,
             190f,
             paint
         )
 
         canvas.drawText(
-            "Diagnóstico: $diagnostico",
-            40f,
+            problema,
+            60f,
             220f,
             paint
         )
 
         canvas.drawText(
-            "Solução: $solucao",
+            "Diagnóstico:",
             40f,
             250f,
             paint
         )
 
         canvas.drawText(
+            diagnostico.trim(),
+            60f,
+            280f,
+            paint
+        )
+
+        canvas.drawText(
+            "Solução:",
+            40f,
+            310f,
+            paint
+        )
+
+        canvas.drawText(
+            solucao.trim(),
+            60f,
+            340f,
+            paint
+        )
+
+        canvas.drawText(
             "Estado: $estado",
             40f,
-            280f,
+            390f,
             paint
         )
 
         canvas.drawText(
             "Orçamento: %.2f €".format(orcamento),
             40f,
-            310f,
+            420f,
             paint
         )
 
@@ -618,7 +665,6 @@ fun DetalhesAssistenciaScreen(
 
         pdfDocument.close()
 
-        pdfDocument.close()
 
         Toast.makeText(
             context,
