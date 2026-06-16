@@ -27,12 +27,18 @@ import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import java.text.SimpleDateFormat
+import java.text.Normalizer
 import java.util.Date
 import java.util.Locale
 import com.example.registarassistncia.data.database.DatabaseProvider
@@ -62,6 +68,13 @@ fun formatarData(timestamp: String): String {
     }
 }
 
+fun removerAcentos(texto: String): String {
+
+    return Normalizer
+        .normalize(texto, Normalizer.Form.NFD)
+        .replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
+}
+
 
 @Composable
 fun ListaAssistenciasScreen(
@@ -76,6 +89,25 @@ fun ListaAssistenciasScreen(
     val assistencias = remember {
         mutableStateListOf<AssistenciaLista>()
     }
+
+    var pesquisa by remember {
+        mutableStateOf("")
+    }
+
+    val pesquisaNormalizada =
+        removerAcentos(pesquisa.lowercase())
+
+    val assistenciasFiltradas = assistencias.filter {
+
+                removerAcentos(it.clienteNome.lowercase()).contains(pesquisaNormalizada) ||
+
+                removerAcentos(it.equipamentoNome.lowercase()).contains(pesquisaNormalizada) ||
+
+                removerAcentos(it.assistencia.estado.lowercase()).contains(pesquisaNormalizada) ||
+
+                removerAcentos(it.assistencia.problema.lowercase()).contains(pesquisaNormalizada)
+    }
+
 
     LaunchedEffect(Unit) {
 
@@ -122,11 +154,40 @@ fun ListaAssistenciasScreen(
         style = MaterialTheme.typography.headlineMedium
     )
 
+        OutlinedTextField(
+            value = pesquisa,
+            onValueChange = {
+                pesquisa = it
+            },
+            label = {
+                Text("Procurar assistência")
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null
+                )
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
     Text(
-        text = "${assistencias.size} Registadas",
+        text = "${assistenciasFiltradas.size} Registadas",
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.primary
     )
+
+        if (assistenciasFiltradas.isEmpty()) {
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Nenhuma assistência encontrada",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
 
     Spacer(modifier = Modifier.height(8.dp))
 
@@ -134,7 +195,7 @@ fun ListaAssistenciasScreen(
 
 
 
-    assistencias.forEach { item ->
+        assistenciasFiltradas.forEach { item ->
 
         Card(
             elevation = CardDefaults.cardElevation(
