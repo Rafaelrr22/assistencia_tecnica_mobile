@@ -117,7 +117,7 @@ fun ListaEquipamentoScreen(
         Text(
             text = "${equipamentosFiltrados.size} Registados",
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = Color(0xFF3F51B5)
         )
 
         if (equipamentosFiltrados.isEmpty()) {

@@ -135,7 +135,7 @@ fun ListaClientesScreen(
         Text(
             text = "${clientesFiltrados.size} Registados",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = Color(0xFF3F51B5)
         )
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -377,7 +377,7 @@ fun ListaAssistenciasScreen(
         Text(
             text = "${assistenciasFiltradas.size} Registadas",
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = Color(0xFF3F51B5)
         )
 
         if (assistenciasFiltradas.isEmpty()) {
