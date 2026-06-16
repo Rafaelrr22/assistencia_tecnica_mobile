@@ -115,6 +115,19 @@ fun ListaAssistenciasScreen(
         "ENTREGUE"
     )
 
+    val opcoesOrdenacao = listOf(
+        "Mais recentes",
+        "Mais antigas"
+    )
+
+    var ordenacao by remember {
+        mutableStateOf("Mais recentes")
+    }
+
+    var expandedOrdenacao by remember {
+        mutableStateOf(false)
+    }
+
     val pesquisaNormalizada =
         removerAcentos(pesquisa.lowercase())
 
@@ -136,6 +149,19 @@ fun ListaAssistenciasScreen(
                     item.assistencia.estado == filtroEstado
 
                      correspondePesquisa && correspondeEstado
+    }
+
+    val assistenciasOrdenadas = when (ordenacao) {
+
+        "Mais antigas" ->
+            assistenciasFiltradas.sortedBy {
+                it.assistencia.dataEntrada
+            }
+
+        else ->
+            assistenciasFiltradas.sortedByDescending {
+                it.assistencia.dataEntrada
+            }
     }
 
 
@@ -246,6 +272,49 @@ fun ListaAssistenciasScreen(
             }
         }
 
+        ExposedDropdownMenuBox(
+            expanded = expandedOrdenacao,
+            onExpandedChange = {
+                expandedOrdenacao = !expandedOrdenacao
+            }
+        ) {
+
+            OutlinedTextField(
+                value = ordenacao,
+                onValueChange = {},
+                readOnly = true,
+                label = {
+                    Text("Ordenação")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor()
+            )
+
+            ExposedDropdownMenu(
+                expanded = expandedOrdenacao,
+                onDismissRequest = {
+                    expandedOrdenacao = false
+                }
+            ) {
+
+                opcoesOrdenacao.forEach { opcao ->
+
+                    DropdownMenuItem(
+                        text = {
+                            Text(opcao)
+                        },
+                        onClick = {
+
+                            ordenacao = opcao
+
+                            expandedOrdenacao = false
+                        }
+                    )
+                }
+            }
+        }
+
 
     Text(
         text = "${assistenciasFiltradas.size} Registadas",
@@ -269,7 +338,7 @@ fun ListaAssistenciasScreen(
 
 
 
-        assistenciasFiltradas.forEach { item ->
+        assistenciasOrdenadas.forEach { item ->
 
         Card(
             elevation = CardDefaults.cardElevation(
