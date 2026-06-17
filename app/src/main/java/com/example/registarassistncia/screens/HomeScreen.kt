@@ -37,6 +37,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.core.content.FileProvider
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.net.Uri
+import com.example.registarassistncia.utils.restaurarBackup
 import com.example.registarassistncia.R
 import com.example.registarassistncia.data.database.DatabaseProvider
 
@@ -73,6 +77,25 @@ fun HomeScreen(modifier: Modifier = Modifier,
         mutableStateOf(0)
     }
 
+    val launcherRestaurar = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+
+        if (uri != null) {
+
+            restaurarBackup(
+                context,
+                uri
+            )
+
+            Toast.makeText(
+                context,
+                "Backup restaurado com sucesso",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
     LaunchedEffect(Unit) {
 
         val db = DatabaseProvider.getDatabase(context)
@@ -100,6 +123,8 @@ fun HomeScreen(modifier: Modifier = Modifier,
             db.assistenciaDao()
                 .contarConcluidas()
     }
+
+
 
 
     Column(
@@ -264,7 +289,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
             )
         }
 
-        Spacer(modifier = Modifier.width(10.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Button(
             onClick = {
@@ -281,6 +306,8 @@ fun HomeScreen(modifier: Modifier = Modifier,
         ) {
             Text("Backup")
         }
+
+        Spacer(modifier = Modifier.height(10.dp))
 
         Button(
             onClick = {
@@ -317,6 +344,18 @@ fun HomeScreen(modifier: Modifier = Modifier,
             }
         ) {
             Text("Partilhar Backup")
+        }
+
+        Button(
+            onClick = {
+
+                launcherRestaurar.launch(
+                    arrayOf("*/*")
+                )
+
+            }
+        ) {
+            Text("Restaurar Backup")
         }
 
 /*
