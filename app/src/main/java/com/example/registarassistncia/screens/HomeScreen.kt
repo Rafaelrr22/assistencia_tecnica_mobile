@@ -1,5 +1,6 @@
 package com.example.registarassistncia.screens
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.core.content.FileProvider
 import com.example.registarassistncia.R
 import com.example.registarassistncia.data.database.DatabaseProvider
 
@@ -278,6 +280,43 @@ fun HomeScreen(modifier: Modifier = Modifier,
             }
         ) {
             Text("Backup")
+        }
+
+        Button(
+            onClick = {
+
+                val ficheiro = criarBackup(context)
+
+                val uri = FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.provider",
+                    ficheiro
+                )
+
+                val intent = Intent(Intent.ACTION_SEND).apply {
+
+                    type = "application/octet-stream"
+
+                    putExtra(
+                        Intent.EXTRA_STREAM,
+                        uri
+                    )
+
+                    addFlags(
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                }
+
+                context.startActivity(
+                    Intent.createChooser(
+                        intent,
+                        "Partilhar Backup"
+                    )
+                )
+
+            }
+        ) {
+            Text("Partilhar Backup")
         }
 
 /*
