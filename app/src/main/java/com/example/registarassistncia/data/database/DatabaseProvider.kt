@@ -26,4 +26,11 @@ object DatabaseProvider {
         instance
         }
     }
+
+    fun fecharDatabase() {
+
+        INSTANCE?.close()
+
+        INSTANCE = null
+    }
 }

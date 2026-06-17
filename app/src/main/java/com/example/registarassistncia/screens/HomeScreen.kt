@@ -83,6 +83,8 @@ fun HomeScreen(modifier: Modifier = Modifier,
 
         if (uri != null) {
 
+            DatabaseProvider.fecharDatabase()
+
             restaurarBackup(
                 context,
                 uri
@@ -90,7 +92,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
 
             Toast.makeText(
                 context,
-                "Backup restaurado com sucesso",
+                "Backup restaurado. Reinicie a aplicação para garantir que todos os dados são recarregados.",
                 Toast.LENGTH_LONG
             ).show()
         }
