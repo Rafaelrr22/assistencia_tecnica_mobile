@@ -1,30 +1,24 @@
 package com.example.registarassistncia.data.entity
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "assistencias")
-
 data class AssistenciaEntity(
 
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    var documentId: String = "",
 
-    val clienteId: Int,
+    val clienteDocumentId: String = "",
 
-    val equipamentoId: Int,
+    val equipamentoDocumentId: String = "",
 
-    val problema: String,
+    val problema: String = "",
 
-    val estado: String,
+    val estado: String = "",
 
-    val diagnostico: String,
+    val diagnostico: String = "",
 
-    val solucao: String,
+    val solucao: String = "",
 
-    val orcamento: Double,
+    val orcamento: Double = 0.0,
 
-    val dataEntrada: String,
+    val dataEntrada: String = "",
 
-    val dataSaida: String?
+    val dataSaida: String? = null
 )

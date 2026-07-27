@@ -46,15 +46,17 @@ import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateListOf
 import com.example.registarassistncia.data.entity.ClienteEntity
-import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.EquipamentoEntity
+
+import com.example.registarassistncia.repository.ClienteRepository
+import com.example.registarassistncia.repository.EquipamentoRepository
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EquipamentoScreen (
     modifier: Modifier = Modifier,
-    equipamentoId: Int? = null,
+    equipamentoDocumentId: String? = null,
     onBackClick: () -> Unit,
     onEquipamentoGuardado: () -> Unit
 )
@@ -63,6 +65,14 @@ fun EquipamentoScreen (
     //VARIAVEIS
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+
+    val clienteRepository = remember {
+        ClienteRepository()
+    }
+
+    val equipamentoRepository = remember {
+        EquipamentoRepository()
+    }
 
     var marca by remember { mutableStateOf("") }
     var modelo by remember { mutableStateOf("") }
@@ -89,27 +99,27 @@ fun EquipamentoScreen (
         mutableStateOf(false)
     }
 
-    var clienteSelecionadoId by remember {
-        mutableStateOf<Int?>(null)
+    var clienteSelecionadoDocumentId by remember {
+        mutableStateOf<String?>(null)
     }
 
-    LaunchedEffect(equipamentoId) {
-
-        val db = DatabaseProvider.getDatabase(context)
+    LaunchedEffect(equipamentoDocumentId) {
 
         clientes.clear()
 
         clientes.addAll(
-            db.clienteDao().listarTodos()
+            clienteRepository.obterClientes()
         )
 
-        if (equipamentoId != null) {
+        if (equipamentoDocumentId != null) {
 
-            db.equipamentoDao()
-                .obterPorId(equipamentoId)
+            equipamentoRepository
+                .obterEquipamento(equipamentoDocumentId)
                 ?.let {
 
-                    clienteSelecionadoId = it.clienteId
+                    clienteSelecionadoDocumentId =
+                        it.clienteDocumentId
+
                     marca = it.marca
                     modelo = it.modelo
                     numSerie = it.numeroSerie
@@ -133,7 +143,7 @@ fun EquipamentoScreen (
     {
         Text(
             text =
-                if (equipamentoId == null)
+                if (equipamentoDocumentId == null)
                     "Novo Equipamento"
                 else
                     "Editar Equipamento",
@@ -173,7 +183,7 @@ fun EquipamentoScreen (
 
                     OutlinedTextField(
                         value = clientes
-                            .find { it.id == clienteSelecionadoId }
+                            .find { it.documentId == clienteSelecionadoDocumentId }
                             ?.nome ?: "",
                         onValueChange = {},
                         readOnly = true,
@@ -200,8 +210,8 @@ fun EquipamentoScreen (
                                 },
                                 onClick = {
 
-                                    clienteSelecionadoId =
-                                        cliente.id
+                                    clienteSelecionadoDocumentId =
+                                        cliente.documentId
 
                                     clienteExpanded = false
                                 }
@@ -335,9 +345,7 @@ fun EquipamentoScreen (
 
                 scope.launch {
 
-                    val db = DatabaseProvider.getDatabase(context)
-
-                    if (clienteSelecionadoId == null) {
+                    if (clienteSelecionadoDocumentId == null) {
 
                         Toast.makeText(
                             context,
@@ -348,20 +356,20 @@ fun EquipamentoScreen (
                         return@launch
                     }
 
-                    if (equipamentoId == null) {
+                    if (equipamentoDocumentId == null) {
 
                         val resultado =
-                            db.equipamentoDao().inserir(
+                            equipamentoRepository.adicionarEquipamento(
                                 EquipamentoEntity(
+                                    clienteDocumentId = clienteSelecionadoDocumentId!!,
                                     marca = marca,
-                                    clienteId = clienteSelecionadoId!!,
                                     modelo = modelo,
                                     numeroSerie = numSerie,
                                     tipoEquipamento = tipoEquipamento
                                 )
                             )
 
-                        if (resultado == -1L) {
+                        if (!resultado) {
 
                             Toast.makeText(
                                 context,
@@ -382,10 +390,10 @@ fun EquipamentoScreen (
 
                     } else {
 
-                        db.equipamentoDao().atualizar(
+                        equipamentoRepository.atualizarEquipamento(
                             EquipamentoEntity(
-                                id = equipamentoId,
-                                clienteId = clienteSelecionadoId!!,
+                                documentId = equipamentoDocumentId!!,
+                                clienteDocumentId = clienteSelecionadoDocumentId!!,
                                 marca = marca,
                                 modelo = modelo,
                                 numeroSerie = numSerie,
@@ -414,7 +422,7 @@ fun EquipamentoScreen (
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                if (equipamentoId == null)
+                if (equipamentoDocumentId == null)
                     "Guardar Equipamento"
                 else
                     "Atualizar Equipamento"

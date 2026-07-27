@@ -1,27 +1,16 @@
 package com.example.registarassistncia.data.entity
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "equipamentos",
-    indices = [
-        Index(value = ["numeroSerie"], unique = true)
-    ])
-
 data class EquipamentoEntity(
 
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    var documentId: String = "",
 
-    val clienteId: Int,
+    val clienteDocumentId: String = "",
 
-    val  marca: String,
+    val marca: String = "",
 
-    val modelo: String,
+    val modelo: String = "",
 
-    val numeroSerie: String,
+    val numeroSerie: String = "",
 
-    val tipoEquipamento: String
-
+    val tipoEquipamento: String = ""
 )

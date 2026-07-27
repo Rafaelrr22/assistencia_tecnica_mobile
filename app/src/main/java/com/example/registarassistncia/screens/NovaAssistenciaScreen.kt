@@ -44,10 +44,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.AssistenciaEntity
 import com.example.registarassistncia.data.entity.ClienteEntity
 import com.example.registarassistncia.data.entity.EquipamentoEntity
+
+import com.example.registarassistncia.repository.AssistenciaRepository
+import com.example.registarassistncia.repository.ClienteRepository
+import com.example.registarassistncia.repository.EquipamentoRepository
 import kotlinx.coroutines.launch
 
 
@@ -62,7 +65,21 @@ fun NovaAssistenciaScreen(
 
     //VARIÁVEIS
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope(
+
+        val clienteRepository = remember {
+        ClienteRepository()
+    }
+
+    val equipamentoRepository = remember {
+        EquipamentoRepository()
+    }
+
+    val assistenciaRepository = remember {
+        AssistenciaRepository()
+    }
+
+    )
 
     val clientes = remember {
         mutableStateListOf<ClienteEntity>()
@@ -72,12 +89,12 @@ fun NovaAssistenciaScreen(
         mutableStateListOf<EquipamentoEntity>()
     }
 
-    var clienteSelecionadoId by remember {
-        mutableStateOf<Int?>(null)
+    var clienteSelecionadoDocumentId by remember {
+        mutableStateOf<String?>(null)
     }
 
-    var equipamentoSelecionadoId by remember {
-        mutableStateOf<Int?>(null)
+    var equipamentoSelecionadoDocumentId by remember {
+        mutableStateOf<String?>(null)
     }
 
     var problema by remember {
