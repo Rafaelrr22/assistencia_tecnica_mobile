@@ -19,20 +19,21 @@ object Routes {
     const val EDITAR_ASSISTENCIA = "editar_assistencia/{assistenciaId}"
 
 
-    //ROTAS CLIENTE
+    // ROTAS CLIENTE
+
     const val CLIENTES = "clientes"
 
     const val LISTA_CLIENTES = "lista_clientes"
 
     const val NOVO_CLIENTE = "novo_cliente"
 
-    const val DETALHES_CLIENTE = "detalhes_cliente/{clienteId}"
-
     const val DETALHES_CLIENTE_BASE = "detalhes_cliente"
 
-    const val EDITAR_CLIENTE = "editar_cliente/{clienteId}"
+    const val DETALHES_CLIENTE = "$DETALHES_CLIENTE_BASE/{clienteDocumentId}"
 
     const val EDITAR_CLIENTE_BASE = "editar_cliente"
+
+    const val EDITAR_CLIENTE = "$EDITAR_CLIENTE_BASE/{clienteDocumentId}"
 
 
 

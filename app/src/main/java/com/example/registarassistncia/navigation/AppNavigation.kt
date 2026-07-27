@@ -60,7 +60,9 @@ fun AppNavigation() {
         }
 
         composable(Routes.CLIENTES) {
+
             ClienteScreen(
+                clienteDocumentId = null,
                 onBackClick = {
                     navController.popBackStack()
                 },
@@ -142,10 +144,10 @@ fun AppNavigation() {
                 onBackClick = {
                     navController.popBackStack()
                 },
-                onDetalhesClienteClick = {
-                        clienteId ->
+                onDetalhesClienteClick = { clienteDocumentId ->
+
                     navController.navigate(
-                        "${Routes.DETALHES_CLIENTE_BASE}/$clienteId"
+                        "${Routes.DETALHES_CLIENTE_BASE}/$clienteDocumentId"
                     )
                 },
                 onNovoClienteClick = {
@@ -158,13 +160,12 @@ fun AppNavigation() {
             route = Routes.DETALHES_CLIENTE
         ) { backStackEntry ->
 
-            val clienteId =
+            val clienteDocumentId =
                 backStackEntry.arguments
-                    ?.getString("clienteId")
-                    ?.toIntOrNull() ?: 0
+                    ?.getString("clienteDocumentId") ?: ""
 
             DetalhesClienteScreen(
-                clienteId = clienteId,
+                clienteDocumentId = clienteDocumentId,
                 onBackClick = {
                     navController.popBackStack()
                 },
@@ -181,13 +182,12 @@ fun AppNavigation() {
             route = Routes.EDITAR_CLIENTE
         ) { backStackEntry ->
 
-            val clienteId =
+            val clienteDocumentId =
                 backStackEntry.arguments
-                    ?.getString("clienteId")
-                    ?.toIntOrNull()
+                    ?.getString("clienteDocumentId")
 
             ClienteScreen(
-                clienteId = clienteId,
+                clienteDocumentId = clienteDocumentId,
                 onBackClick = {
                     navController.popBackStack()
                 },

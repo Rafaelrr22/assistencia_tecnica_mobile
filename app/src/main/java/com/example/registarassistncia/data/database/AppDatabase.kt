@@ -12,7 +12,7 @@ import com.example.registarassistncia.data.dao.AssistenciaDao
 
 @Database(
     entities = [
-        ClienteEntity::class,
+       // ClienteEntity::class,
         EquipamentoEntity::class,
         AssistenciaEntity::class,
     ],
@@ -23,7 +23,7 @@ import com.example.registarassistncia.data.dao.AssistenciaDao
 
     abstract class AppDatabase : RoomDatabase() {
 
-        abstract fun clienteDao(): ClienteDao
+       // abstract fun clienteDao(): ClienteDao
 
         abstract fun equipamentoDao(): EquipamentoDao
 

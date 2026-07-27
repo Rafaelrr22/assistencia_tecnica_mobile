@@ -34,21 +34,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.material3.AlertDialog
 
-import com.example.registarassistncia.data.database.DatabaseProvider
+import com.example.registarassistncia.repository.ClienteRepository
 import com.example.registarassistncia.data.entity.ClienteEntity
 
 @Composable
 fun DetalhesClienteScreen(
     modifier: Modifier = Modifier,
-    clienteId: Int,
-    onEditarClick: (Int) -> Unit,
+    clienteDocumentId: String,
+    onEditarClick: (String) -> Unit,
     onBackClick: () -> Unit
 )
 
@@ -57,9 +56,12 @@ fun DetalhesClienteScreen(
 
 {
 
-    val context = LocalContext.current
 
     val scope = rememberCoroutineScope()
+
+    val repository = remember {
+        ClienteRepository()
+    }
 
     var mostrarDialog by remember {
         mutableStateOf(false)
@@ -70,12 +72,8 @@ fun DetalhesClienteScreen(
         mutableStateOf<ClienteEntity?>(null)
     }
 
-    LaunchedEffect(clienteId) {
-
-        val db = DatabaseProvider.getDatabase(context)
-
-        cliente =
-            db.clienteDao().obterPorId(clienteId)
+    LaunchedEffect(clienteDocumentId) {
+        cliente = repository.obterCliente(clienteDocumentId)
     }
 
     Column(
@@ -162,7 +160,7 @@ fun DetalhesClienteScreen(
         Button(
             onClick = {
                 cliente?.let {
-                    onEditarClick(it.id)
+                    onEditarClick(it.documentId)
                 }
             },
             modifier = Modifier.fillMaxWidth(0.5f)
@@ -224,9 +222,7 @@ fun DetalhesClienteScreen(
 
                          cliente?.let {
 
-                            val db = DatabaseProvider.getDatabase(context)
-
-                            db.clienteDao().apagar(it)
+                             repository.apagarCliente(it.documentId)
 
                             onBackClick()
                         }

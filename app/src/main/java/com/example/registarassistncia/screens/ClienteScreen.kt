@@ -41,15 +41,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.ClienteEntity
+import com.example.registarassistncia.repository.ClienteRepository
 import android.widget.Toast
 import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun ClienteScreen(
     modifier: Modifier = Modifier,
-    clienteId: Int? = null,
+    clienteDocumentId: String? = null,
     onBackClick: () -> Unit,
     onClienteGuardado: () -> Unit
 )
@@ -60,6 +60,7 @@ fun ClienteScreen(
     //VARIAVEIS
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val repository = ClienteRepository()
 
     var nome by remember { mutableStateOf("") }
     var telefone by remember { mutableStateOf("") }
@@ -68,14 +69,12 @@ fun ClienteScreen(
     var morada by remember { mutableStateOf("") }
     var tipoCliente by remember { mutableStateOf("PARTICULAR") }
 
-    LaunchedEffect(clienteId) {
+    LaunchedEffect(clienteDocumentId) {
 
-        if (clienteId != null) {
+        if (clienteDocumentId != null) {
 
-            val db = DatabaseProvider.getDatabase(context)
 
-            db.clienteDao()
-                .obterPorId(clienteId)
+            repository.obterCliente(clienteDocumentId)
                 ?.let {
 
                     nome = it.nome
@@ -100,7 +99,7 @@ fun ClienteScreen(
     ) {
         Text(
             text =
-                if (clienteId == null)
+                if (clienteDocumentId == null)
                     "Novo Cliente"
                 else
                     "Editar Cliente",
@@ -289,12 +288,11 @@ fun ClienteScreen(
 
                 scope.launch {
 
-                    val db = DatabaseProvider.getDatabase(context)
 
-                    if (clienteId == null) {
+                    if (clienteDocumentId == null) {
 
                         val resultado =
-                            db.clienteDao().inserir(
+                            repository.adicionarCliente(
                                 ClienteEntity(
                                     nome = nome,
                                     telefone = telefone,
@@ -305,7 +303,7 @@ fun ClienteScreen(
                                 )
                             )
 
-                        if (resultado == -1L) {
+                        if (!resultado) {
 
                             Toast.makeText(
                                 context,
@@ -333,9 +331,9 @@ fun ClienteScreen(
 
                     } else {
 
-                        db.clienteDao().atualizar(
+                        repository.atualizarCliente(
                             ClienteEntity(
-                                id = clienteId,
+                                documentId = clienteDocumentId!!,
                                 nome = nome,
                                 telefone = telefone,
                                 email = email,
@@ -366,7 +364,7 @@ fun ClienteScreen(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                if (clienteId == null)
+                if (clienteDocumentId == null)
                     "Guardar Cliente"
                 else
                     "Atualizar Cliente"

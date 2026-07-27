@@ -38,8 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.example.registarassistncia.data.entity.ClienteEntity
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
-import com.example.registarassistncia.data.database.DatabaseProvider
+import com.example.registarassistncia.repository.ClienteRepository
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.getValue
@@ -50,13 +49,16 @@ import androidx.compose.runtime.setValue
 fun ListaClientesScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onDetalhesClienteClick: (Int) -> Unit,
+    onDetalhesClienteClick: (String) -> Unit,
     onNovoClienteClick: () -> Unit
 ) {
 
     //VARIÁVEIS
 
-    val context = LocalContext.current
+    val repository = remember {
+        ClienteRepository()
+    }
+
     val clientes = remember {
         mutableStateListOf<ClienteEntity>()
     }
@@ -76,12 +78,10 @@ fun ListaClientesScreen(
 
     LaunchedEffect(Unit) {
 
-        val db = DatabaseProvider.getDatabase(context)
-
         clientes.clear()
 
         clientes.addAll(
-            db.clienteDao().listarTodos()
+            repository.obterClientes()
         )
     }
 
@@ -165,7 +165,7 @@ fun ListaClientesScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable{
-                    onDetalhesClienteClick(cliente.id)
+                    onDetalhesClienteClick(cliente.documentId)
                 }
 
         )
