@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "962612075475",
+    "project_id": "assistenciatecnica-d719f",
+    "storage_bucket": "assistenciatecnica-d719f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962612075475:android:de2a2e8168e2d2ff306d26",
+        "android_client_info": {
+          "package_name": "com.example.registarassistncia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh72qtV5-mosIBKIBhLfsiB3e52TiaJD8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

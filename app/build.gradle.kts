@@ -1,7 +1,11 @@
+import org.gradle.kotlin.dsl.android
+import org.gradle.kotlin.dsl.dependencies
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -42,6 +46,7 @@ android {
 
 
 dependencies {
+    //Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.foundation.layout)
@@ -51,9 +56,17 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
+
+    //Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
+
+    //Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
+
+    //Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
 
