@@ -205,8 +205,8 @@ fun AppNavigation() {
                 onBackClick = {
                     navController.popBackStack()
                 },
-                onDetalhesEquipamentoClick = { equipamentoId ->
-                    navController.navigate("${Routes.DETALHES_EQUIPAMENTO_BASE}/$equipamentoId")
+                onDetalhesEquipamentoClick = { equipamentoDocumentId ->
+                    navController.navigate("${Routes.DETALHES_EQUIPAMENTO_BASE}/$equipamentoDocumentId")
                 },
                 onNovoEquipamentoClick = {
                     navController.navigate(Routes.EQUIPAMENTOS)
@@ -220,13 +220,13 @@ fun AppNavigation() {
             route = Routes.DETALHES_EQUIPAMENTO
         ) { backStackEntry ->
 
-            val equipamentoId =
+            val equipamentoDocumentId =
                 backStackEntry.arguments
-                    ?.getString("equipamentoId")
-                    ?.toIntOrNull() ?: 0
+                    ?.getString("equipamentoDocumentId")
+                    ?: ""
 
             DetalhesEquipamentoScreen(
-                equipamentoId = equipamentoId,
+                equipamentoDocumentId = equipamentoDocumentId,
                 onBackClick = {
                     navController.popBackStack()
                 },
@@ -243,13 +243,13 @@ fun AppNavigation() {
             route = Routes.EDITAR_EQUIPAMENTO
         ) { backStackEntry ->
 
-            val equipamentoId =
+            val equipamentoDocumentId =
                 backStackEntry.arguments
-                    ?.getString("equipamentoId")
-                    ?.toIntOrNull()
+                    ?.getString("equipamentoDocumentId")
+                    ?: ""
 
             EquipamentoScreen(
-                equipamentoId = equipamentoId,
+                equipamentoDocumentId = equipamentoDocumentId,
                 onBackClick = {
                     navController.popBackStack()
                 },

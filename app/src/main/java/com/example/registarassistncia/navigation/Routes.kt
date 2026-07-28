@@ -44,13 +44,13 @@ object Routes {
 
     const val NOVO_EQUIPAMENTO = "novo_equipamento"
 
-    const val DETALHES_EQUIPAMENTO = "detalhes_equipamento/{equipamentoId}"
+    const val DETALHES_EQUIPAMENTO = "detalhes_equipamento/{equipamentoDocumentId}"
 
     const val DETALHES_EQUIPAMENTO_BASE = "detalhes_equipamento"
 
     const val EDITAR_EQUIPAMENTO_BASE = "editar_equipamento"
 
-    const val EDITAR_EQUIPAMENTO = "editar_equipamento/{equipamentoId}"
+    const val EDITAR_EQUIPAMENTO = "editar_equipamento/{equipamentoDocumentId}"
 
 
 

@@ -24,19 +24,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
-import androidx.compose.ui.platform.LocalContext
-import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.EquipamentoEntity
+import com.example.registarassistncia.repository.EquipamentoRepository
 
 @Composable
 fun DetalhesEquipamentoScreen(
     modifier: Modifier = Modifier,
-    equipamentoId: Int,
+    equipamentoDocumentId: String,
     onBackClick: () -> Unit,
-    onEditarClick: (Int) -> Unit
+    onEditarClick: (String) -> Unit
 ) {
-
-    val context = LocalContext.current
 
     val scope = rememberCoroutineScope()
 
@@ -48,12 +45,16 @@ fun DetalhesEquipamentoScreen(
         mutableStateOf<EquipamentoEntity?>(null)
     }
 
-    LaunchedEffect(equipamentoId) {
+    val equipamentoRepository = remember {
+        EquipamentoRepository()
+    }
 
-        val db = DatabaseProvider.getDatabase(context)
+    LaunchedEffect(equipamentoDocumentId) {
 
         equipamento =
-            db.equipamentoDao().obterPorId(equipamentoId)
+            equipamentoRepository.obterEquipamento(
+                equipamentoDocumentId
+            )
     }
 
 
@@ -122,7 +123,7 @@ fun DetalhesEquipamentoScreen(
         Button(
             onClick = {
                 equipamento?.let {
-                    onEditarClick(it.id)
+                    onEditarClick(it.documentId)
                 }
             },
             modifier = Modifier.fillMaxWidth(0.5f)
@@ -180,10 +181,9 @@ fun DetalhesEquipamentoScreen(
 
                             equipamento?.let {
 
-                                val db =
-                                    DatabaseProvider.getDatabase(context)
-
-                                db.equipamentoDao().apagar(it)
+                                equipamentoRepository.apagarEquipamento(
+                                    it.documentId
+                                )
 
                                 onBackClick()
                             }

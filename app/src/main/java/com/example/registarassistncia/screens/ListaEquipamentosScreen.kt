@@ -27,20 +27,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.registarassistncia.data.database.DatabaseProvider
+import com.example.registarassistncia.repository.EquipamentoRepository
 import com.example.registarassistncia.data.entity.EquipamentoEntity
 
 @Composable
 fun ListaEquipamentoScreen(
     modifier: Modifier = Modifier,
     onNovoEquipamentoClick: () -> Unit,
-    onDetalhesEquipamentoClick: (Int) -> Unit,
+    onDetalhesEquipamentoClick: (String) -> Unit,
     onBackClick: () -> Unit
 ) {
-
-    val context = LocalContext.current
 
     val equipamentos = remember {
         mutableStateListOf<EquipamentoEntity>()
@@ -48,6 +45,10 @@ fun ListaEquipamentoScreen(
 
     var pesquisa by remember {
         mutableStateOf("")
+    }
+
+    val equipamentoRepository = remember {
+        EquipamentoRepository()
     }
 
     val equipamentosFiltrados = equipamentos.filter {
@@ -60,12 +61,10 @@ fun ListaEquipamentoScreen(
 
     LaunchedEffect(Unit) {
 
-        val db = DatabaseProvider.getDatabase(context)
-
         equipamentos.clear()
 
         equipamentos.addAll(
-            db.equipamentoDao().listarTodos()
+            equipamentoRepository.obterEquipamentos()
         )
     }
 
@@ -144,7 +143,7 @@ fun ListaEquipamentoScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        onDetalhesEquipamentoClick(equipamento.id)
+                        onDetalhesEquipamentoClick(equipamento.documentId)
                     }
             ) {
                 Column(
