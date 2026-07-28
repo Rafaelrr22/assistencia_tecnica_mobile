@@ -42,7 +42,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import android.net.Uri
 import com.example.registarassistncia.utils.restaurarBackup
 import com.example.registarassistncia.R
-import com.example.registarassistncia.data.database.DatabaseProvider
+import com.example.registarassistncia.repository.AssistenciaRepository
+import com.example.registarassistncia.repository.ClienteRepository
+import com.example.registarassistncia.repository.EquipamentoRepository
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier,
@@ -56,6 +60,8 @@ fun HomeScreen(modifier: Modifier = Modifier,
     //VARIÁVEIS
 
     val context = LocalContext.current
+
+    val scope = rememberCoroutineScope()
 
     var totalClientes by remember {
         mutableStateOf(0)
@@ -77,53 +83,66 @@ fun HomeScreen(modifier: Modifier = Modifier,
         mutableStateOf(0)
     }
 
+    val assistenciaRepository = remember {
+        AssistenciaRepository()
+    }
+
+    val clienteRepository = remember {
+        ClienteRepository()
+    }
+
+    val equipamentoRepository = remember {
+        EquipamentoRepository()
+    }
+
     val launcherRestaurar = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
 
         if (uri != null) {
 
-            DatabaseProvider.fecharDatabase()
+            scope.launch {
 
-            restaurarBackup(
-                context,
-                uri
-            )
+                restaurarBackup(
+                    context,
+                    uri
+                )
 
-            Toast.makeText(
-                context,
-                "Backup restaurado. Reinicie a aplicação para garantir que todos os dados são recarregados.",
-                Toast.LENGTH_LONG
-            ).show()
+                Toast.makeText(
+                    context,
+                    "Backup restaurado com sucesso.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 
     LaunchedEffect(Unit) {
 
-        val db = DatabaseProvider.getDatabase(context)
+        val clientes =
+            clienteRepository.obterClientes()
 
-        totalClientes =
-            db.clienteDao()
-                .listarTodos()
-                .size
+        val equipamentos =
+            equipamentoRepository.obterEquipamentos()
 
-        totalEquipamentos =
-            db.equipamentoDao()
-                .listarTodos()
-                .size
+        val assistencias =
+            assistenciaRepository.obterAssistencias()
 
-        totalAssistencias =
-            db.assistenciaDao()
-                .listarTodas()
-                .size
+        totalClientes = clientes.size
+
+        totalEquipamentos = equipamentos.size
+
+        totalAssistencias = assistencias.size
 
         assistenciasPendentes =
-            db.assistenciaDao()
-                .contarPendentes()
+            assistencias.count {
+                it.estado == "PENDENTE"
+            }
 
         assistenciasConcluidas =
-            db.assistenciaDao()
-                .contarConcluidas()
+            assistencias.count {
+                it.estado == "CONCLUÍDA"
+            }
     }
 
 
@@ -295,15 +314,17 @@ fun HomeScreen(modifier: Modifier = Modifier,
 
         Button(
             onClick = {
-                val ficheiro = criarBackup(context)
 
-                Toast.makeText(
-                    context,
-                    "Backup criado: ${ficheiro.name}",
-                    Toast.LENGTH_LONG
-                ).show()
+                scope.launch {
 
+                    val ficheiro = criarBackup(context)
 
+                    Toast.makeText(
+                        context,
+                        "Backup criado: ${ficheiro.name}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         ) {
             Text("Backup")
@@ -314,35 +335,37 @@ fun HomeScreen(modifier: Modifier = Modifier,
         Button(
             onClick = {
 
-                val ficheiro = criarBackup(context)
+                scope.launch {
 
-                val uri = FileProvider.getUriForFile(
-                    context,
-                    "${context.packageName}.provider",
-                    ficheiro
-                )
+                    val ficheiro = criarBackup(context)
 
-                val intent = Intent(Intent.ACTION_SEND).apply {
-
-                    type = "application/octet-stream"
-
-                    putExtra(
-                        Intent.EXTRA_STREAM,
-                        uri
+                    val uri = FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.provider",
+                        ficheiro
                     )
 
-                    addFlags(
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+
+                        type = "application/json"
+
+                        putExtra(
+                            Intent.EXTRA_STREAM,
+                            uri
+                        )
+
+                        addFlags(
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        )
+                    }
+
+                    context.startActivity(
+                        Intent.createChooser(
+                            intent,
+                            "Partilhar Backup"
+                        )
                     )
                 }
-
-                context.startActivity(
-                    Intent.createChooser(
-                        intent,
-                        "Partilhar Backup"
-                    )
-                )
-
             }
         ) {
             Text("Partilhar Backup")

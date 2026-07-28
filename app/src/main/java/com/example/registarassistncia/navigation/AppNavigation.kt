@@ -50,10 +50,10 @@ fun AppNavigation() {
                 onBackClick = {
                     navController.popBackStack()
                 },
-                onDetalhesClick = { assistenciaId ->
+                onDetalhesClick = { assistenciaDocumentId ->
 
                     navController.navigate(
-                        "${Routes.DETALHES_ASSISTENCIA_BASE}/$assistenciaId"
+                        "${Routes.DETALHES_ASSISTENCIA_BASE}/$assistenciaDocumentId"
                     )
                 }
             )
@@ -98,20 +98,20 @@ fun AppNavigation() {
             route = Routes.DETALHES_ASSISTENCIA
         ) { backStackEntry ->
 
-            val assistenciaId =
+            val assistenciaDocumentId =
                 backStackEntry.arguments
-                    ?.getString("assistenciaId")
-                    ?.toIntOrNull() ?: 0
+                    ?.getString("assistenciaDocumentId")
+                    ?: ""
 
             DetalhesAssistenciaScreen(
-                assistenciaId = assistenciaId,
+                assistenciaDocumentId = assistenciaDocumentId,
                 onBackClick = {
                     navController.popBackStack()
                 },
-                onEditarClick = { id ->
+                onEditarClick = { documentId ->
 
                     navController.navigate(
-                        "${Routes.EDITAR_ASSISTENCIA_BASE}/$id"
+                        "${Routes.EDITAR_ASSISTENCIA_BASE}/$documentId"
                     )
                 }
             )
@@ -121,13 +121,12 @@ fun AppNavigation() {
             route = Routes.EDITAR_ASSISTENCIA
         ) { backStackEntry ->
 
-            val assistenciaId =
+            val assistenciaDocumentId =
                 backStackEntry.arguments
-                    ?.getString("assistenciaId")
-                    ?.toIntOrNull()
+                    ?.getString("assistenciaDocumentId")
 
             NovaAssistenciaScreen(
-                assistenciaId = assistenciaId,
+                assistenciaDocumentId = assistenciaDocumentId,
                 onBackClick = {
                     navController.popBackStack()
                 },

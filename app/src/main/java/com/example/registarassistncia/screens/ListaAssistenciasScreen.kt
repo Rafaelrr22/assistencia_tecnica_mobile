@@ -41,13 +41,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import java.text.SimpleDateFormat
 import java.text.Normalizer
 import java.util.Date
 import java.util.Locale
-import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.AssistenciaEntity
+import com.example.registarassistncia.repository.AssistenciaRepository
+import com.example.registarassistncia.repository.ClienteRepository
+import com.example.registarassistncia.repository.EquipamentoRepository
 
 
 data class AssistenciaLista(
@@ -86,14 +87,25 @@ fun removerAcentos(texto: String): String {
 fun ListaAssistenciasScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onDetalhesClick: (Int) -> Unit
+    onDetalhesClick: (String) -> Unit
 ) {
 
     //Variáveis
-    val context = LocalContext.current
 
     val assistencias = remember {
         mutableStateListOf<AssistenciaLista>()
+    }
+
+    val assistenciaRepository = remember {
+        AssistenciaRepository()
+    }
+
+    val clienteRepository = remember {
+        ClienteRepository()
+    }
+
+    val equipamentoRepository = remember {
+        EquipamentoRepository()
     }
 
     var pesquisa by remember {
@@ -146,11 +158,10 @@ fun ListaAssistenciasScreen(
                     removerAcentos(item.assistencia.problema.lowercase()).contains(pesquisaNormalizada)
 
         val correspondeEstado =
-
-                    filtroEstado == "Todos" ||
+            filtroEstado == "Todos" ||
                     item.assistencia.estado == filtroEstado
 
-                     correspondePesquisa && correspondeEstado
+        correspondePesquisa && correspondeEstado
     }
 
     val assistenciasOrdenadas = when (ordenacao) {
@@ -169,26 +180,30 @@ fun ListaAssistenciasScreen(
 
     LaunchedEffect(Unit) {
 
-        val db = DatabaseProvider.getDatabase(context)
-
         assistencias.clear()
 
-        db.assistenciaDao()
-            .listarTodas()
+        assistenciaRepository
+            .obterAssistencias()
             .forEach { assistencia ->
 
                 val cliente =
-                    db.clienteDao()
-                        .obterPorId(assistencia.clienteId)
+                    clienteRepository
+                        .obterCliente(
+                            assistencia.clienteDocumentId
+                        )
 
                 val equipamento =
-                    db.equipamentoDao()
-                        .obterPorId(assistencia.equipamentoId)
+                    equipamentoRepository
+                        .obterEquipamento(
+                            assistencia.equipamentoDocumentId
+                        )
 
                 assistencias.add(
                     AssistenciaLista(
                         assistencia = assistencia,
-                        clienteNome = cliente?.nome ?: "Cliente removido",
+                        clienteNome =
+                            cliente?.nome ?: "Cliente removido",
+
                         equipamentoNome =
                             "${equipamento?.marca ?: ""} ${equipamento?.modelo ?: ""}"
                     )
@@ -409,7 +424,7 @@ fun ListaAssistenciasScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    onDetalhesClick(item.assistencia.id)
+                    onDetalhesClick(item.assistencia.documentId)
                 }
         ) {
             Column(

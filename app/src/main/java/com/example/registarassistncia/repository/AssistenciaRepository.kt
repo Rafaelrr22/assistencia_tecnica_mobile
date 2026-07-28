@@ -75,4 +75,25 @@ class AssistenciaRepository {
             .delete()
             .await()
     }
+
+    suspend fun restaurarAssistencia(
+        assistencia: AssistenciaEntity
+    ) {
+
+        assistencias
+            .document(assistencia.documentId)
+            .set(assistencia)
+            .await()
+    }
+
+    suspend fun apagarTodasAssistencias() {
+
+        val snapshot = assistencias.get().await()
+
+        snapshot.documents.forEach {
+
+            it.reference.delete().await()
+
+        }
+    }
 }

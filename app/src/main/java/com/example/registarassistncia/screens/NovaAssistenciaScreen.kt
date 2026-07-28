@@ -58,16 +58,17 @@ import kotlinx.coroutines.launch
 @Composable
 fun NovaAssistenciaScreen(
     modifier: Modifier = Modifier,
-    assistenciaId: Int? = null,
+    assistenciaDocumentId: String? = null,
     onBackClick: () -> Unit,
     onAssistenciaGuardada: () -> Unit
 ) {
 
     //VARIÁVEIS
     val context = LocalContext.current
-    val scope = rememberCoroutineScope(
 
-        val clienteRepository = remember {
+    val scope = rememberCoroutineScope()
+
+    val clienteRepository = remember {
         ClienteRepository()
     }
 
@@ -79,7 +80,6 @@ fun NovaAssistenciaScreen(
         AssistenciaRepository()
     }
 
-    )
 
     val clientes = remember {
         mutableStateListOf<ClienteEntity>()
@@ -148,49 +148,45 @@ fun NovaAssistenciaScreen(
 
     LaunchedEffect(Unit) {
 
-        val db = DatabaseProvider.getDatabase(context)
-
         clientes.clear()
 
         clientes.addAll(
-            db.clienteDao().listarTodos()
+            clienteRepository.obterClientes()
         )
     }
 
-    LaunchedEffect(assistenciaId) {
+    LaunchedEffect(assistenciaDocumentId) {
 
-        if (assistenciaId != null) {
+        if (assistenciaDocumentId != null) {
 
-            val db = DatabaseProvider.getDatabase(context)
 
-             assistencia =
-                db.assistenciaDao()
-                    .obterPorId(assistenciaId)
+            assistencia =
+                assistenciaRepository.obterAssistencia(
+                    assistenciaDocumentId
+                )
 
             assistencia?.let {
 
-                clienteSelecionadoId = it.clienteId
+                clienteSelecionadoDocumentId =
+                    it.clienteDocumentId
 
-                equipamentoSelecionadoId = it.equipamentoId
+                equipamentoSelecionadoDocumentId =
+                    it.equipamentoDocumentId
 
                 equipamentos.clear()
 
                 equipamentos.addAll(
-                    db.equipamentoDao()
-                        .listarPorCliente(it.clienteId)
+                    equipamentoRepository
+                        .obterEquipamentosPorCliente(
+                            it.clienteDocumentId
+                        )
                 )
 
                 problema = it.problema
-
                 diagnostico = it.diagnostico
-
                 solucao = it.solucao
-
                 orcamento = it.orcamento.toString()
-
                 estado = it.estado
-
-
             }
         }
     }
@@ -242,7 +238,7 @@ fun NovaAssistenciaScreen(
 
                     OutlinedTextField(
                         value = clientes
-                            .find { it.id == clienteSelecionadoId }
+                            .find { it.documentId == clienteSelecionadoDocumentId}
                             ?.nome ?: "",
                         onValueChange = {},
                         readOnly = true,
@@ -269,22 +265,21 @@ fun NovaAssistenciaScreen(
                                 },
                                 onClick = {
 
-                                    clienteSelecionadoId = cliente.id
+                                    clienteSelecionadoDocumentId = cliente.documentId
 
-                                    equipamentoSelecionadoId = null
+                                    equipamentoSelecionadoDocumentId = null
 
                                     clienteExpanded = false
 
                                     scope.launch {
 
-                                        val db =
-                                            DatabaseProvider.getDatabase(context)
-
                                         equipamentos.clear()
 
                                         equipamentos.addAll(
-                                            db.equipamentoDao()
-                                                .listarPorCliente(cliente.id)
+                                            equipamentoRepository
+                                                .obterEquipamentosPorCliente(
+                                                    cliente.documentId
+                                                )
                                         )
                                     }
                                 }
@@ -315,7 +310,7 @@ fun NovaAssistenciaScreen(
                     OutlinedTextField(
                         value = equipamentos
                             .find {
-                                it.id == equipamentoSelecionadoId
+                                it.documentId == equipamentoSelecionadoDocumentId
                             }
                             ?.let {
                                 "${it.marca} ${it.modelo}"
@@ -347,8 +342,8 @@ fun NovaAssistenciaScreen(
                                 },
                                 onClick = {
 
-                                    equipamentoSelecionadoId =
-                                        equipamento.id
+                                    equipamentoSelecionadoDocumentId =
+                                        equipamento.documentId
 
                                     equipamentoExpanded = false
                                 }
@@ -542,9 +537,7 @@ fun NovaAssistenciaScreen(
 
                 scope.launch {
 
-                    val db = DatabaseProvider.getDatabase(context)
-
-                    if (clienteSelecionadoId == null) {
+                    if (clienteSelecionadoDocumentId == null) {
 
                         Toast.makeText(
                             context,
@@ -555,7 +548,7 @@ fun NovaAssistenciaScreen(
                         return@launch
                     }
 
-                    if (equipamentoSelecionadoId == null) {
+                    if (equipamentoSelecionadoDocumentId == null) {
 
                         Toast.makeText(
                             context,
@@ -566,12 +559,16 @@ fun NovaAssistenciaScreen(
                         return@launch
                     }
 
-                    if (assistenciaId == null) {
+                    if (assistenciaDocumentId == null) {
 
-                        db.assistenciaDao().inserir(
+                        assistenciaRepository.adicionarAssistencia(
                             AssistenciaEntity(
-                                clienteId = clienteSelecionadoId!!,
-                                equipamentoId = equipamentoSelecionadoId!!,
+                                clienteDocumentId =
+                                    clienteSelecionadoDocumentId!!,
+
+                                equipamentoDocumentId =
+                                    equipamentoSelecionadoDocumentId!!,
+
                                 problema = problema,
                                 estado = estado.ifBlank { "PENDENTE" },
                                 diagnostico = diagnostico,
@@ -590,18 +587,26 @@ fun NovaAssistenciaScreen(
 
                     } else {
 
-                        db.assistenciaDao().atualizar(
+                        assistenciaRepository.atualizarAssistencia(
                             AssistenciaEntity(
-                                id = assistenciaId,
-                                clienteId = clienteSelecionadoId!!,
-                                equipamentoId = equipamentoSelecionadoId!!,
+                                documentId =
+                                    assistenciaDocumentId!!,
+
+                                clienteDocumentId =
+                                    clienteSelecionadoDocumentId!!,
+
+                                equipamentoDocumentId =
+                                    equipamentoSelecionadoDocumentId!!,
+
                                 problema = problema,
                                 estado = estado,
                                 diagnostico = diagnostico,
                                 solucao = solucao,
                                 orcamento = orcamento.toDoubleOrNull() ?: 0.0,
-                                dataEntrada = assistencia?.dataEntrada ?: "",
-                                dataSaida = assistencia?.dataSaida
+                                dataEntrada =
+                                    assistencia?.dataEntrada ?: "",
+                                dataSaida =
+                                    assistencia?.dataSaida
                             )
                         )
 
@@ -625,7 +630,7 @@ fun NovaAssistenciaScreen(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                if (assistenciaId == null)
+                if (assistenciaDocumentId == null)
                     "Guardar Assistência"
                 else
                     "Atualizar Assistência"

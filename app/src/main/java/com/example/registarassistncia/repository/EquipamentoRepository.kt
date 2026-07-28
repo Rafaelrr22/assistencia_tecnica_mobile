@@ -109,4 +109,25 @@ class EquipamentoRepository {
             .delete()
             .await()
     }
+
+    suspend fun restaurarEquipamento(
+        equipamento: EquipamentoEntity
+    ) {
+
+        equipamentos
+            .document(equipamento.documentId)
+            .set(equipamento)
+            .await()
+    }
+
+    suspend fun apagarTodosEquipamentos() {
+
+        val snapshot = equipamentos.get().await()
+
+        snapshot.documents.forEach {
+
+            it.reference.delete().await()
+
+        }
+    }
 }

@@ -12,11 +12,11 @@ object Routes {
 
     const val DETALHES_ASSISTENCIA_BASE = "detalhes_assistencia"
 
-    const val DETALHES_ASSISTENCIA = "$DETALHES_ASSISTENCIA_BASE/{assistenciaId}"
+    const val DETALHES_ASSISTENCIA = "$DETALHES_ASSISTENCIA_BASE/{assistenciaDocumentId}"
 
     const val EDITAR_ASSISTENCIA_BASE = "editar_assistencia"
 
-    const val EDITAR_ASSISTENCIA = "editar_assistencia/{assistenciaId}"
+    const val EDITAR_ASSISTENCIA = "$EDITAR_ASSISTENCIA_BASE/{assistenciaDocumentId}"
 
 
     // ROTAS CLIENTE

@@ -37,23 +37,24 @@ import androidx.compose.material3.AlertDialog
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
 import android.widget.Toast
-import android.widget.Toast.makeText
 import androidx.compose.material.icons.filled.Share
 import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
 import kotlinx.coroutines.launch
-import com.example.registarassistncia.data.database.DatabaseProvider
 import com.example.registarassistncia.data.entity.AssistenciaEntity
 import com.example.registarassistncia.data.entity.ClienteEntity
 import com.example.registarassistncia.data.entity.EquipamentoEntity
+import com.example.registarassistncia.repository.AssistenciaRepository
+import com.example.registarassistncia.repository.ClienteRepository
+import com.example.registarassistncia.repository.EquipamentoRepository
 
 @Composable
 fun DetalhesAssistenciaScreen(
     modifier: Modifier = Modifier,
-    assistenciaId: Int,
+    assistenciaDocumentId: String,
     onBackClick: () -> Unit,
-    onEditarClick: (Int) -> Unit
+    onEditarClick: (String) -> Unit
 ) {
 
 
@@ -74,27 +75,40 @@ fun DetalhesAssistenciaScreen(
 
     val scope = rememberCoroutineScope()
 
+    val assistenciaRepository = remember {
+        AssistenciaRepository()
+    }
+
+    val clienteRepository = remember {
+        ClienteRepository()
+    }
+
+    val equipamentoRepository = remember {
+        EquipamentoRepository()
+    }
+
     var mostrarDialog by remember {
         mutableStateOf(false)
     }
 
-    LaunchedEffect(assistenciaId) {
-
-        val db = DatabaseProvider.getDatabase(context)
+    LaunchedEffect(assistenciaDocumentId) {
 
         assistencia =
-            db.assistenciaDao()
-                .obterPorId(assistenciaId)
+            assistenciaRepository.obterAssistencia(
+                assistenciaDocumentId
+            )
 
         assistencia?.let {
 
             cliente =
-                db.clienteDao()
-                    .obterPorId(it.clienteId)
+                clienteRepository.obterCliente(
+                    it.clienteDocumentId
+                )
 
             equipamento =
-                db.equipamentoDao()
-                    .obterPorId(it.equipamentoId)
+                equipamentoRepository.obterEquipamento(
+                    it.equipamentoDocumentId
+                )
         }
     }
 
@@ -307,7 +321,7 @@ fun DetalhesAssistenciaScreen(
 
                 assistencia?.let {
 
-                    onEditarClick(it.id)
+                    onEditarClick(it.documentId)
                 }
             },
             modifier = Modifier.fillMaxWidth(0.5f)
@@ -508,13 +522,10 @@ fun DetalhesAssistenciaScreen(
 
                             assistencia?.let {
 
-                                val db =
-                                    DatabaseProvider.getDatabase(context)
-
-                                db.assistenciaDao()
-                                    .apagar(it)
-
-                                onBackClick()
+                                assistenciaRepository
+                                    .apagarAssistencia(
+                                        it.documentId
+                                    )
                             }
                         }
                     }

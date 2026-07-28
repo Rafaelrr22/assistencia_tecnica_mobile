@@ -79,4 +79,25 @@ class ClienteRepository {
             .delete()
             .await()
     }
+
+    suspend fun restaurarCliente(
+        cliente: ClienteEntity
+    ) {
+
+        clientes
+            .document(cliente.documentId)
+            .set(cliente)
+            .await()
+    }
+
+    suspend fun apagarTodosClientes() {
+
+        val snapshot = clientes.get().await()
+
+        snapshot.documents.forEach {
+
+            it.reference.delete().await()
+
+        }
+    }
 }
