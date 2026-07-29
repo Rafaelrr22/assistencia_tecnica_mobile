@@ -37,14 +37,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.runtime.rememberCoroutineScope
-import kotlinx.coroutines.launch
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import com.example.registarassistncia.data.entity.ClienteEntity
-import com.example.registarassistncia.repository.ClienteRepository
 import android.widget.Toast
 import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.registarassistncia.viewmodel.ClienteViewModel
 
 @Composable
 fun ClienteScreen(
@@ -59,8 +58,7 @@ fun ClienteScreen(
 {
     //VARIAVEIS
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val repository = ClienteRepository()
+    val viewModel: ClienteViewModel = viewModel()
 
     var nome by remember { mutableStateOf("") }
     var telefone by remember { mutableStateOf("") }
@@ -74,8 +72,9 @@ fun ClienteScreen(
         if (clienteDocumentId != null) {
 
 
-            repository.obterCliente(clienteDocumentId)
-                ?.let {
+            viewModel.obterCliente(clienteDocumentId) { cliente ->
+
+                cliente?.let {
 
                     nome = it.nome
                     telefone = it.telefone
@@ -84,6 +83,7 @@ fun ClienteScreen(
                     morada = it.morada
                     tipoCliente = it.tipoCliente
                 }
+            }
         }
     }
 
@@ -286,41 +286,40 @@ fun ClienteScreen(
         Button(
             onClick = {
 
-                scope.launch {
+                viewModel.guardarCliente(
 
+                    ClienteEntity(
+                        documentId = clienteDocumentId ?: "",
+                        nome = nome,
+                        telefone = telefone,
+                        email = email,
+                        nif = nif,
+                        morada = morada,
+                        tipoCliente = tipoCliente
+                    )
 
-                    if (clienteDocumentId == null) {
+                ) { sucesso ->
 
-                        val resultado =
-                            repository.adicionarCliente(
-                                ClienteEntity(
-                                    nome = nome,
-                                    telefone = telefone,
-                                    email = email,
-                                    nif = nif,
-                                    morada = morada,
-                                    tipoCliente = tipoCliente
-                                )
-                            )
+                    if (!sucesso) {
 
-                        if (!resultado) {
+                        Toast.makeText(
+                            context,
+                            "Já existe um cliente com este NIF",
+                            Toast.LENGTH_LONG
+                        ).show()
 
-                            Toast.makeText(
-                                context,
-                                "Já existe um cliente com este NIF",
-                                Toast.LENGTH_LONG
-                            ).show()
+                    } else {
 
-                        } else {
+                        Toast.makeText(
+                            context,
+                            if (clienteDocumentId == null)
+                                "Cliente criado com sucesso"
+                            else
+                                "Cliente atualizado com sucesso",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
-                            Toast.makeText(
-                                context,
-                                "Cliente criado com sucesso",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                            onClienteGuardado()
-
+                        if (clienteDocumentId == null) {
                             nome = ""
                             telefone = ""
                             email = ""
@@ -328,26 +327,6 @@ fun ClienteScreen(
                             morada = ""
                             tipoCliente = "PARTICULAR"
                         }
-
-                    } else {
-
-                        repository.atualizarCliente(
-                            ClienteEntity(
-                                documentId = clienteDocumentId!!,
-                                nome = nome,
-                                telefone = telefone,
-                                email = email,
-                                nif = nif,
-                                morada = morada,
-                                tipoCliente = tipoCliente
-                            )
-                        )
-
-                        Toast.makeText(
-                            context,
-                            "Cliente atualizado com sucesso",
-                            Toast.LENGTH_SHORT
-                        ).show()
 
                         onClienteGuardado()
                     }

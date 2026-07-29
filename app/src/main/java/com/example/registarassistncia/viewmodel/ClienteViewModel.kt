@@ -32,4 +32,39 @@ class ClienteViewModel : ViewModel() {
 
         }
     }
+
+    fun obterCliente(
+        documentId: String,
+        onResult: (ClienteEntity?) -> Unit
+    ) {
+
+        viewModelScope.launch {
+
+            onResult(
+                repository.obterCliente(documentId)
+            )
+        }
+    }
+    fun guardarCliente(
+        cliente: ClienteEntity,
+        onResult: (Boolean) -> Unit
+    ) {
+
+        viewModelScope.launch {
+
+            val sucesso =
+
+                if (cliente.documentId.isBlank()) {
+                    repository.adicionarCliente(cliente)
+                } else {
+                    repository.atualizarCliente(cliente)
+                    true
+                }
+
+            onResult(sucesso)
+
+            carregarClientes()
+        }
+    }
+
 }
