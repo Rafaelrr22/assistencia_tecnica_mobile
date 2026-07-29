@@ -41,15 +41,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import android.widget.Toast
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.mutableStateListOf
-import com.example.registarassistncia.data.entity.ClienteEntity
 import com.example.registarassistncia.data.entity.EquipamentoEntity
 
-import com.example.registarassistncia.repository.ClienteRepository
-import com.example.registarassistncia.repository.EquipamentoRepository
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.registarassistncia.viewmodel.EquipamentoViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,15 +61,10 @@ fun EquipamentoScreen (
 {
     //VARIAVEIS
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
 
-    val clienteRepository = remember {
-        ClienteRepository()
-    }
+    val viewModel: EquipamentoViewModel = viewModel()
 
-    val equipamentoRepository = remember {
-        EquipamentoRepository()
-    }
+    val clientes by viewModel.clientes.collectAsState()
 
     var marca by remember { mutableStateOf("") }
     var modelo by remember { mutableStateOf("") }
@@ -91,9 +83,6 @@ fun EquipamentoScreen (
 
     var tipoEquipamento by remember { mutableStateOf("PORTÁTIL") }
 
-    val clientes = remember {
-        mutableStateListOf<ClienteEntity>()
-    }
 
     var clienteExpanded by remember {
         mutableStateOf(false)
@@ -105,17 +94,11 @@ fun EquipamentoScreen (
 
     LaunchedEffect(equipamentoDocumentId) {
 
-        clientes.clear()
-
-        clientes.addAll(
-            clienteRepository.obterClientes()
-        )
-
         if (equipamentoDocumentId != null) {
 
-            equipamentoRepository
-                .obterEquipamento(equipamentoDocumentId)
-                ?.let {
+            viewModel.obterEquipamento(equipamentoDocumentId) { equipamento ->
+
+                equipamento?.let {
 
                     clienteSelecionadoDocumentId =
                         it.clienteDocumentId
@@ -125,6 +108,7 @@ fun EquipamentoScreen (
                     numSerie = it.numeroSerie
                     tipoEquipamento = it.tipoEquipamento
                 }
+            }
         }
     }
 
@@ -343,33 +327,30 @@ fun EquipamentoScreen (
         Button(
             onClick = {
 
-                scope.launch {
+                if (clienteSelecionadoDocumentId == null) {
 
-                    if (clienteSelecionadoDocumentId == null) {
+                    Toast.makeText(
+                        context,
+                        "Selecione um cliente",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                        Toast.makeText(
-                            context,
-                            "Selecione um cliente",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                } else {
 
-                        return@launch
-                    }
+                    viewModel.guardarEquipamento(
 
-                    if (equipamentoDocumentId == null) {
+                        EquipamentoEntity(
+                            documentId = equipamentoDocumentId ?: "",
+                            clienteDocumentId = clienteSelecionadoDocumentId!!,
+                            marca = marca,
+                            modelo = modelo,
+                            numeroSerie = numSerie,
+                            tipoEquipamento = tipoEquipamento
+                        )
 
-                        val resultado =
-                            equipamentoRepository.adicionarEquipamento(
-                                EquipamentoEntity(
-                                    clienteDocumentId = clienteSelecionadoDocumentId!!,
-                                    marca = marca,
-                                    modelo = modelo,
-                                    numeroSerie = numSerie,
-                                    tipoEquipamento = tipoEquipamento
-                                )
-                            )
+                    ) { sucesso ->
 
-                        if (!resultado) {
+                        if (!sucesso) {
 
                             Toast.makeText(
                                 context,
@@ -381,33 +362,15 @@ fun EquipamentoScreen (
 
                             Toast.makeText(
                                 context,
-                                "Equipamento criado com sucesso",
+                                if (equipamentoDocumentId == null)
+                                    "Equipamento criado com sucesso"
+                                else
+                                    "Equipamento atualizado com sucesso",
                                 Toast.LENGTH_SHORT
                             ).show()
 
                             onEquipamentoGuardado()
                         }
-
-                    } else {
-
-                        equipamentoRepository.atualizarEquipamento(
-                            EquipamentoEntity(
-                                documentId = equipamentoDocumentId!!,
-                                clienteDocumentId = clienteSelecionadoDocumentId!!,
-                                marca = marca,
-                                modelo = modelo,
-                                numeroSerie = numSerie,
-                                tipoEquipamento = tipoEquipamento
-                            )
-                        )
-
-                        Toast.makeText(
-                            context,
-                            "Equipamento atualizado com sucesso",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        onEquipamentoGuardado()
                     }
                 }
             },

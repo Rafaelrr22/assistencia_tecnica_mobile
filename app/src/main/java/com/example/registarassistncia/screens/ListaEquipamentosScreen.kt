@@ -18,9 +18,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,8 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.registarassistncia.repository.EquipamentoRepository
-import com.example.registarassistncia.data.entity.EquipamentoEntity
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
+import com.example.registarassistncia.viewmodel.EquipamentoViewModel
 
 @Composable
 fun ListaEquipamentoScreen(
@@ -39,17 +38,14 @@ fun ListaEquipamentoScreen(
     onBackClick: () -> Unit
 ) {
 
-    val equipamentos = remember {
-        mutableStateListOf<EquipamentoEntity>()
-    }
+    val viewModel: EquipamentoViewModel = viewModel()
+
+    val equipamentos by viewModel.equipamentos.collectAsState()
 
     var pesquisa by remember {
         mutableStateOf("")
     }
 
-    val equipamentoRepository = remember {
-        EquipamentoRepository()
-    }
 
     val equipamentosFiltrados = equipamentos.filter {
 
@@ -59,14 +55,6 @@ fun ListaEquipamentoScreen(
                 it.tipoEquipamento.contains(pesquisa, true)
     }
 
-    LaunchedEffect(Unit) {
-
-        equipamentos.clear()
-
-        equipamentos.addAll(
-            equipamentoRepository.obterEquipamentos()
-        )
-    }
 
     Column(
         modifier = modifier
