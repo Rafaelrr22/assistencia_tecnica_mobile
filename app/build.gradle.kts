@@ -66,6 +66,7 @@ dependencies {
     //Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
 
 
     testImplementation(libs.junit)

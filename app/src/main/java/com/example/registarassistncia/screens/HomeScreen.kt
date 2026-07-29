@@ -28,11 +28,7 @@ import com.example.registarassistncia.utils.criarBackup
 import androidx.compose.foundation.Image
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -42,11 +38,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import android.net.Uri
 import com.example.registarassistncia.utils.restaurarBackup
 import com.example.registarassistncia.R
-import com.example.registarassistncia.repository.AssistenciaRepository
-import com.example.registarassistncia.repository.ClienteRepository
-import com.example.registarassistncia.repository.EquipamentoRepository
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.registarassistncia.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier,
@@ -63,37 +59,13 @@ fun HomeScreen(modifier: Modifier = Modifier,
 
     val scope = rememberCoroutineScope()
 
-    var totalClientes by remember {
-        mutableStateOf(0)
-    }
+    val homeViewModel: HomeViewModel = viewModel()
 
-    var totalEquipamentos by remember {
-        mutableStateOf(0)
-    }
-
-    var totalAssistencias by remember {
-        mutableStateOf(0)
-    }
-
-    var assistenciasPendentes by remember {
-        mutableStateOf(0)
-    }
-
-    var assistenciasConcluidas by remember {
-        mutableStateOf(0)
-    }
-
-    val assistenciaRepository = remember {
-        AssistenciaRepository()
-    }
-
-    val clienteRepository = remember {
-        ClienteRepository()
-    }
-
-    val equipamentoRepository = remember {
-        EquipamentoRepository()
-    }
+    val totalClientes by homeViewModel.totalClientes.collectAsState()
+    val totalEquipamentos by homeViewModel.totalEquipamentos.collectAsState()
+    val totalAssistencias by homeViewModel.totalAssistencias.collectAsState()
+    val assistenciasPendentes by homeViewModel.assistenciasPendentes.collectAsState()
+    val assistenciasConcluidas by homeViewModel.assistenciasConcluidas.collectAsState()
 
     val launcherRestaurar = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -116,35 +88,6 @@ fun HomeScreen(modifier: Modifier = Modifier,
             }
         }
     }
-
-    LaunchedEffect(Unit) {
-
-        val clientes =
-            clienteRepository.obterClientes()
-
-        val equipamentos =
-            equipamentoRepository.obterEquipamentos()
-
-        val assistencias =
-            assistenciaRepository.obterAssistencias()
-
-        totalClientes = clientes.size
-
-        totalEquipamentos = equipamentos.size
-
-        totalAssistencias = assistencias.size
-
-        assistenciasPendentes =
-            assistencias.count {
-                it.estado == "PENDENTE"
-            }
-
-        assistenciasConcluidas =
-            assistencias.count {
-                it.estado == "CONCLUÍDA"
-            }
-    }
-
 
 
 
