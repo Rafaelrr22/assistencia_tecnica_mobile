@@ -30,20 +30,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.registarassistncia.data.entity.ClienteEntity
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import com.example.registarassistncia.repository.ClienteRepository
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
+import com.example.registarassistncia.viewmodel.ClienteViewModel
+
 
 @Composable
 fun ListaClientesScreen(
@@ -55,13 +55,11 @@ fun ListaClientesScreen(
 
     //VARIÁVEIS
 
-    val repository = remember {
-        ClienteRepository()
-    }
 
-    val clientes = remember {
-        mutableStateListOf<ClienteEntity>()
-    }
+    val viewModel: ClienteViewModel = viewModel()
+
+    val clientes by viewModel.clientes.collectAsState()
+
 
     var pesquisa by remember {
         mutableStateOf("")
@@ -72,16 +70,6 @@ fun ListaClientesScreen(
         it.nome.contains(
             pesquisa,
             ignoreCase = true
-        )
-    }
-
-
-    LaunchedEffect(Unit) {
-
-        clientes.clear()
-
-        clientes.addAll(
-            repository.obterClientes()
         )
     }
 
