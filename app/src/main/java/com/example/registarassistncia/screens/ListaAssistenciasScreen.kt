@@ -50,6 +50,10 @@ import com.example.registarassistncia.repository.AssistenciaRepository
 import com.example.registarassistncia.repository.ClienteRepository
 import com.example.registarassistncia.repository.EquipamentoRepository
 
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.registarassistncia.viewmodel.AssistenciaViewModel
+
 
 data class AssistenciaLista(
     val assistencia: AssistenciaEntity,
@@ -92,21 +96,13 @@ fun ListaAssistenciasScreen(
 
     //Variáveis
 
-    val assistencias = remember {
-        mutableStateListOf<AssistenciaLista>()
-    }
+    val viewModel: AssistenciaViewModel = viewModel()
 
-    val assistenciaRepository = remember {
-        AssistenciaRepository()
-    }
+    val assistenciasBD by viewModel.assistencias.collectAsState()
 
-    val clienteRepository = remember {
-        ClienteRepository()
-    }
+    val clientes by viewModel.clientes.collectAsState()
 
-    val equipamentoRepository = remember {
-        EquipamentoRepository()
-    }
+    val equipamentos by viewModel.equipamentos.collectAsState()
 
     var pesquisa by remember {
         mutableStateOf("")
@@ -178,37 +174,24 @@ fun ListaAssistenciasScreen(
     }
 
 
-    LaunchedEffect(Unit) {
+    val assistencias = assistenciasBD.map { assistencia ->
 
-        assistencias.clear()
-
-        assistenciaRepository
-            .obterAssistencias()
-            .forEach { assistencia ->
-
-                val cliente =
-                    clienteRepository
-                        .obterCliente(
-                            assistencia.clienteDocumentId
-                        )
-
-                val equipamento =
-                    equipamentoRepository
-                        .obterEquipamento(
-                            assistencia.equipamentoDocumentId
-                        )
-
-                assistencias.add(
-                    AssistenciaLista(
-                        assistencia = assistencia,
-                        clienteNome =
-                            cliente?.nome ?: "Cliente removido",
-
-                        equipamentoNome =
-                            "${equipamento?.marca ?: ""} ${equipamento?.modelo ?: ""}"
-                    )
-                )
+        val cliente =
+            clientes.find {
+                it.documentId == assistencia.clienteDocumentId
             }
+
+        val equipamento =
+            equipamentos.find {
+                it.documentId == assistencia.equipamentoDocumentId
+            }
+
+        AssistenciaLista(
+            assistencia = assistencia,
+            clienteNome = cliente?.nome ?: "Cliente removido",
+            equipamentoNome =
+                "${equipamento?.marca ?: ""} ${equipamento?.modelo ?: ""}"
+        )
     }
 
     Column(

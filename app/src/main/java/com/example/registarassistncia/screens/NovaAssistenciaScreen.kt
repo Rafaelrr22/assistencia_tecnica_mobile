@@ -34,10 +34,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,14 +43,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.registarassistncia.data.entity.AssistenciaEntity
-import com.example.registarassistncia.data.entity.ClienteEntity
-import com.example.registarassistncia.data.entity.EquipamentoEntity
 
-import com.example.registarassistncia.repository.AssistenciaRepository
-import com.example.registarassistncia.repository.ClienteRepository
-import com.example.registarassistncia.repository.EquipamentoRepository
-import kotlinx.coroutines.launch
-
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.registarassistncia.viewmodel.AssistenciaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,28 +60,11 @@ fun NovaAssistenciaScreen(
     //VARIÁVEIS
     val context = LocalContext.current
 
-    val scope = rememberCoroutineScope()
+    val viewModel: AssistenciaViewModel = viewModel()
 
-    val clienteRepository = remember {
-        ClienteRepository()
-    }
+    val clientes by viewModel.clientes.collectAsState()
 
-    val equipamentoRepository = remember {
-        EquipamentoRepository()
-    }
-
-    val assistenciaRepository = remember {
-        AssistenciaRepository()
-    }
-
-
-    val clientes = remember {
-        mutableStateListOf<ClienteEntity>()
-    }
-
-    val equipamentos = remember {
-        mutableStateListOf<EquipamentoEntity>()
-    }
+    val equipamentos by viewModel.equipamentos.collectAsState()
 
     var clienteSelecionadoDocumentId by remember {
         mutableStateOf<String?>(null)
@@ -146,47 +123,36 @@ fun NovaAssistenciaScreen(
 
 
 
-    LaunchedEffect(Unit) {
 
-        clientes.clear()
-
-        clientes.addAll(
-            clienteRepository.obterClientes()
-        )
-    }
 
     LaunchedEffect(assistenciaDocumentId) {
 
         if (assistenciaDocumentId != null) {
 
+            viewModel.obterAssistencia(
+                assistenciaDocumentId
+            ) { assistenciaObtida ->
 
-            assistencia =
-                assistenciaRepository.obterAssistencia(
-                    assistenciaDocumentId
-                )
+                assistencia = assistenciaObtida
 
-            assistencia?.let {
+                assistenciaObtida?.let {
 
-                clienteSelecionadoDocumentId =
-                    it.clienteDocumentId
+                    clienteSelecionadoDocumentId =
+                        it.clienteDocumentId
 
-                equipamentoSelecionadoDocumentId =
-                    it.equipamentoDocumentId
+                    equipamentoSelecionadoDocumentId =
+                        it.equipamentoDocumentId
 
-                equipamentos.clear()
+                    viewModel.carregarEquipamentos(
+                        it.clienteDocumentId
+                    )
 
-                equipamentos.addAll(
-                    equipamentoRepository
-                        .obterEquipamentosPorCliente(
-                            it.clienteDocumentId
-                        )
-                )
-
-                problema = it.problema
-                diagnostico = it.diagnostico
-                solucao = it.solucao
-                orcamento = it.orcamento.toString()
-                estado = it.estado
+                    problema = it.problema
+                    diagnostico = it.diagnostico
+                    solucao = it.solucao
+                    orcamento = it.orcamento.toString()
+                    estado = it.estado
+                }
             }
         }
     }
@@ -271,17 +237,9 @@ fun NovaAssistenciaScreen(
 
                                     clienteExpanded = false
 
-                                    scope.launch {
-
-                                        equipamentos.clear()
-
-                                        equipamentos.addAll(
-                                            equipamentoRepository
-                                                .obterEquipamentosPorCliente(
-                                                    cliente.documentId
-                                                )
-                                        )
-                                    }
+                                    viewModel.carregarEquipamentos(
+                                        cliente.documentId
+                                    )
                                 }
                             )
                         }
@@ -535,91 +493,69 @@ fun NovaAssistenciaScreen(
         Button(
             onClick = {
 
-                scope.launch {
+                if (clienteSelecionadoDocumentId == null) {
 
-                    if (clienteSelecionadoDocumentId == null) {
+                    Toast.makeText(
+                        context,
+                        "Selecione um cliente",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                        Toast.makeText(
-                            context,
-                            "Selecione um cliente",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    return@Button
+                }
 
-                        return@launch
-                    }
+                if (equipamentoSelecionadoDocumentId == null) {
 
-                    if (equipamentoSelecionadoDocumentId == null) {
+                    Toast.makeText(
+                        context,
+                        "Selecione um equipamento",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                        Toast.makeText(
-                            context,
-                            "Selecione um equipamento",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    return@Button
+                }
 
-                        return@launch
-                    }
+                val novaAssistencia = AssistenciaEntity(
 
-                    if (assistenciaDocumentId == null) {
+                    documentId = assistenciaDocumentId ?: "",
 
-                        assistenciaRepository.adicionarAssistencia(
-                            AssistenciaEntity(
-                                clienteDocumentId =
-                                    clienteSelecionadoDocumentId!!,
+                    clienteDocumentId =
+                        clienteSelecionadoDocumentId!!,
 
-                                equipamentoDocumentId =
-                                    equipamentoSelecionadoDocumentId!!,
+                    equipamentoDocumentId =
+                        equipamentoSelecionadoDocumentId!!,
 
-                                problema = problema,
-                                estado = estado.ifBlank { "PENDENTE" },
-                                diagnostico = diagnostico,
-                                solucao = solucao,
-                                orcamento = orcamento.toDoubleOrNull() ?: 0.0,
-                                dataEntrada = System.currentTimeMillis().toString(),
-                                dataSaida = null
-                            )
-                        )
+                    problema = problema,
+                    estado = estado.ifBlank { "PENDENTE" },
+                    diagnostico = diagnostico,
+                    solucao = solucao,
+                    orcamento = orcamento.toDoubleOrNull() ?: 0.0,
 
-                        Toast.makeText(
-                            context,
-                            "Assistência criada",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    dataEntrada =
+                        assistencia?.dataEntrada
+                            ?: System.currentTimeMillis().toString(),
 
-                    } else {
+                    dataSaida =
+                        assistencia?.dataSaida
+                )
 
-                        assistenciaRepository.atualizarAssistencia(
-                            AssistenciaEntity(
-                                documentId =
-                                    assistenciaDocumentId!!,
+                viewModel.guardarAssistencia(
+                    novaAssistencia
+                ) {
 
-                                clienteDocumentId =
-                                    clienteSelecionadoDocumentId!!,
-
-                                equipamentoDocumentId =
-                                    equipamentoSelecionadoDocumentId!!,
-
-                                problema = problema,
-                                estado = estado,
-                                diagnostico = diagnostico,
-                                solucao = solucao,
-                                orcamento = orcamento.toDoubleOrNull() ?: 0.0,
-                                dataEntrada =
-                                    assistencia?.dataEntrada ?: "",
-                                dataSaida =
-                                    assistencia?.dataSaida
-                            )
-                        )
-
-                        Toast.makeText(
-                            context,
+                    Toast.makeText(
+                        context,
+                        if (assistenciaDocumentId == null)
+                            "Assistência criada"
+                        else
                             "Assistência atualizada",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                     onAssistenciaGuardada()
                 }
             },
+
             modifier = Modifier.fillMaxWidth(0.6f)
         ) {
             Icon(
